@@ -12,7 +12,19 @@ class ConcentrationViewController: UIViewController {
 
     // MARK: - User Interface Properties
     
-    private lazy var verticalStackView: UIStackView = {
+    private lazy var topStackView: UIStackView = {
+        let stackView = UIStackView()
+        
+        stackView.axis = .vertical
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 5
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stackView
+    }()
+    
+    private lazy var concentrationStackView: UIStackView = {
         let stackView = UIStackView()
         
         stackView.axis = .vertical
@@ -36,18 +48,18 @@ class ConcentrationViewController: UIViewController {
             
             stackView.translatesAutoresizingMaskIntoConstraints = false
             
-            stackView.heightAnchor.constraint(equalToConstant: 100).isActive = true
-            
             stackViews.append(stackView)
         }
         return stackViews
     }()
     
     private lazy var cardButtons: [UIButton] = {
-    var buttons = [UIButton]()
+        var buttons = [UIButton]()
         
         for _ in 0..<20 {
             let button = UIButton()
+            
+            button.titleLabel?.font = .systemFont(ofSize: 40)
             
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -59,6 +71,10 @@ class ConcentrationViewController: UIViewController {
     private lazy var flipCountLabel: UILabel = {
         let label = UILabel()
         
+        label.font = .boldSystemFont(ofSize: 25)
+        
+        label.textColor = .black
+        
         label.translatesAutoresizingMaskIntoConstraints = false
         
         label.text = "Flips: \(game.flipCount)"
@@ -69,6 +85,10 @@ class ConcentrationViewController: UIViewController {
     private lazy var scoreLabel: UILabel = {
         let label = UILabel()
         
+        label.font = .boldSystemFont(ofSize: 25)
+        
+        label.textColor = .black
+        
         label.translatesAutoresizingMaskIntoConstraints = false
         
         label.text = "Score: \(game.score)"
@@ -76,20 +96,53 @@ class ConcentrationViewController: UIViewController {
         return label
     }()
     
+    private lazy var newGameButton: UIButton = {
+        let button = UIButton()
+        
+        button.setTitle("New Game", for: .normal)
+        
+        button.titleLabel?.font = .boldSystemFont(ofSize: 20)
+        
+        button.setTitleColor(.white, for: .normal)
+        
+        button.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        
+        button.layer.cornerRadius = .pi
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
+    
     // MARK: - Concentration Game Properties
     
-    private lazy var game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1)/2)
+    private lazy var game: Concentration! = Concentration(numberOfPairsOfCards: (cardButtons.count + 1)/2)
     
-    private lazy var emojiChoices = ["🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🐯","🦁","🐮","🐷"]
+    private lazy var animalTheme = ["🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🐯","🦁","🐮","🐷"]
     
-    private var emoji = [Int: String]()
+    private lazy var sportTheme = ["⚽️","🏀","🏈","⚾️","🎾","🏐","🏉","🎱","🏓","🏸","🥅","🏒","🥊"]
+    
+    private lazy var facesTheme = ["😀","😅","😇","😍","😋","🤪","🧐","😎","🤩","😭","🤬","😱","🤮"]
+    
+    private lazy var clothesTheme = ["🧥","👚","👕","👖","👔","👗","👙","👘","👠","🧤","👑","🎒","🌂"]
+    
+    private lazy var foodTheme = ["🍏","🍐","🍋","🍌","🍉","🍇","🥥","🍆","🍑","🥑","🥩","🥟","🍕"]
+    
+    private lazy var carsTheme = ["🚗","🚕","🚙","🚌","🚎","🏎","🚓","🚑","🚒","🚐","🚚","🚛","🚜"]
+    
+    private lazy var emojiThemes = [animalTheme, sportTheme, facesTheme, clothesTheme, foodTheme, carsTheme]
+    
+    private lazy var emojiChoices = chooseRandomTheme(from: emojiThemes)
+    
+    private lazy var cardBackgroundColor = setupButtonBackgroundColor()
+    
+    private lazy var emoji = [Int: String]()
     
     // MARK: - View Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .lightGray
         setupLayout()
     }
     
@@ -99,11 +152,22 @@ class ConcentrationViewController: UIViewController {
         if let cardNumber = cardButtons.firstIndex(of: sender) {
             game.chooseCard(at: cardNumber)
             updateViewFromModel()
-            updateFlipCountLabel()
+            updateFlipCountAndScoreLabel()
         } else {
             print("Warning! The chosen card was not in cardButtons")
         }
     }
+    
+    @objc func newGameButtonTapped() {
+        game = nil
+        game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1)/2)
+        emojiChoices = chooseRandomTheme(from: emojiThemes)
+        cardBackgroundColor = setupButtonBackgroundColor()
+        setupLayout()
+        updateFlipCountAndScoreLabel()
+    }
+    
+    // MARK: - Setup Functions
     
     private func updateViewFromModel() {
         for index in cardButtons.indices {
@@ -115,7 +179,7 @@ class ConcentrationViewController: UIViewController {
                 button.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
             } else {
                 button.setTitle("", for: .normal)
-                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : #colorLiteral(red: 0.2196078449, green: 0.007843137719, blue: 0.8549019694, alpha: 1)
+                button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 1, blue: 1, alpha: 0) : cardBackgroundColor
             }
         }
     }
@@ -131,35 +195,56 @@ class ConcentrationViewController: UIViewController {
         return emoji[card.identifier] ?? "?"
     }
     
-    // MARK: - Setup Functions
+    private func chooseRandomTheme(from themes: [[String]]) -> [String] {
+        return themes.randomElement()!
+    }
     
-    private func updateFlipCountLabel() {
+    private func updateFlipCountAndScoreLabel() {
         flipCountLabel.text = "Flips: \(game.flipCount)"
+        scoreLabel.text = "Score: \(game.score)"
     }
     
-    private func setupLayout() {
-        let safeArea = view.safeAreaLayoutGuide
-        
-        view.addSubview(verticalStackView)
-        view.addSubview(flipCountLabel)
- 
-        flipCountLabel.bottomAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
-        flipCountLabel.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 5).isActive = true
-        flipCountLabel.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -5).isActive = true
-        
-        verticalStackView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
-        verticalStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 5).isActive = true
-        verticalStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -5).isActive = true
-        
-        horizontalStackViews.forEach { stackView in
-            verticalStackView.addArrangedSubview(stackView)
+    private func setupViewBackgroundColor() {
+        switch emojiChoices {
+        case animalTheme:
+            view.backgroundColor = #colorLiteral(red: 1, green: 0.2993363322, blue: 0.6630111634, alpha: 1)
+        case sportTheme:
+            view.backgroundColor = #colorLiteral(red: 1, green: 0.5937196917, blue: 0.08242634248, alpha: 1)
+        case facesTheme:
+            view.backgroundColor = #colorLiteral(red: 0.1428158921, green: 0.3664214567, blue: 1, alpha: 1)
+        case clothesTheme:
+            view.backgroundColor = #colorLiteral(red: 0.04062543526, green: 0.9449648283, blue: 1, alpha: 1)
+        case foodTheme:
+            view.backgroundColor = #colorLiteral(red: 0.6541963498, green: 1, blue: 0.1064179282, alpha: 1)
+        case carsTheme:
+            view.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        default:
+            break
         }
-        
-        setupCardButtons()
-        updateViewFromModel()
     }
     
-    private func setupCardButtons() {
+    private func setupButtonBackgroundColor() -> UIColor? {
+        var choosenColor: UIColor?
+        switch emojiChoices {
+        case animalTheme:
+            choosenColor = #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
+        case sportTheme:
+            choosenColor = #colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)
+        case facesTheme:
+            choosenColor = #colorLiteral(red: 0.9686274529, green: 0.8058855335, blue: 0.1210624714, alpha: 1)
+        case clothesTheme:
+            choosenColor = #colorLiteral(red: 0.9686274529, green: 0.06510510622, blue: 0.07257949882, alpha: 1)
+        case foodTheme:
+            choosenColor = #colorLiteral(red: 0.5072839704, green: 0.1115098435, blue: 0.8549019694, alpha: 1)
+        case carsTheme:
+            choosenColor = #colorLiteral(red: 0.06274510175, green: 0, blue: 0.1921568662, alpha: 1)
+        default:
+            break
+        }
+        return choosenColor
+    }
+    
+    private func setupButtons() {
         for button in cardButtons {
             button.addTarget(self, action: #selector(touchCard(_:)), for: .touchUpInside)
         }
@@ -183,6 +268,48 @@ class ConcentrationViewController: UIViewController {
         cardButtons[16...19].forEach { button in
             horizontalStackViews[4].addArrangedSubview(button)
         }
+        
+        newGameButton.addTarget(self, action: #selector(newGameButtonTapped), for: .touchUpInside)
+    }
+    
+    private func setupLayout() {
+        let safeArea = view.safeAreaLayoutGuide
+        
+        view.addSubview(topStackView)
+        topStackView.addSubview(flipCountLabel)
+        topStackView.addSubview(scoreLabel)
+        topStackView.addSubview(concentrationStackView)
+        topStackView.addSubview(newGameButton)
+
+        topStackView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+        topStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+        topStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+        topStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+        
+        flipCountLabel.topAnchor.constraint(equalTo: topStackView.topAnchor).isActive = true
+        flipCountLabel.leadingAnchor.constraint(equalTo: topStackView.leadingAnchor, constant: 5).isActive = true
+        flipCountLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        scoreLabel.topAnchor.constraint(equalTo: topStackView.topAnchor).isActive = true
+        scoreLabel.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: -5).isActive = true
+        scoreLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        concentrationStackView.topAnchor.constraint(equalTo: flipCountLabel.bottomAnchor, constant: 5).isActive = true
+        concentrationStackView.leadingAnchor.constraint(equalTo: topStackView.leadingAnchor, constant: 5).isActive = true
+        concentrationStackView.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: -5).isActive = true
+        concentrationStackView.heightAnchor.constraint(equalTo: topStackView.heightAnchor, multiplier: 0.65).isActive = true
+        
+        horizontalStackViews.forEach { stackView in
+            concentrationStackView.addArrangedSubview(stackView)
+        }
+        
+        newGameButton.topAnchor.constraint(equalTo: concentrationStackView.bottomAnchor, constant: 20).isActive = true
+        newGameButton.centerXAnchor.constraint(equalTo: topStackView.centerXAnchor).isActive = true
+        newGameButton.widthAnchor.constraint(equalTo: topStackView.widthAnchor, multiplier: 0.25).isActive = true
+        
+        setupButtons()
+        updateViewFromModel()
+        setupViewBackgroundColor()
     }
 
 }

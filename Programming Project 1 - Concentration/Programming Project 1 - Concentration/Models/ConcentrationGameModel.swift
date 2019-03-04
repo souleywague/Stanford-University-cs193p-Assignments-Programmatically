@@ -8,41 +8,30 @@
 
 import Foundation
 
-/// Models a "Concentration" game
 ///
-/// Concentration, also known as Match Match, Match Up, Memory, or simply Pairs, is a card game
-/// in which all of the cards are laid face down on a surface and two cards are flipped face up
-/// over each turn. The object of the game is to turn over pairs of matching cards.
-/// Concentration can be played with any number of players or as solitaire. It is a particularly
-/// good game for young children, though adults may find it challenging and stimulating as well.
+/// Models a "Concentration" game
 ///
 
 class Concentration {
     
-    var cards = [Card]()
+    private(set) var cards = [Card]()
     
     var flipCount = 0
     
-    var score = 0
+    private(set) var score = 0
     
-    var indexOfOneAndOnlyFacedUpCard: Int?
-    
-    func chooseCard(at index: Int) {
-        if !cards[index].isMatched {
-            flipCount += 1
-            if let matchIndex = indexOfOneAndOnlyFacedUpCard, matchIndex != index {
-                if cards[matchIndex].identifier == cards[index].identifier {
-                    cards[matchIndex].isMatched = true
-                    cards[index].isMatched = true
+    private var indexOfOneAndOnlyFacedUpCard: Int? {
+        get {
+            return cards.indices.filter { cards[$0].isFaceUp }.oneAndOnly
+        } set {
+            for index in cards.indices {
+                if(cards[index].isFaceUp) {
+                    if !cards[index].isMatched && cards[index].hasBeenFlippedAtLeastOne {
+                        score -= 1
+                    }
+                    cards[index].hasBeenFlippedAtLeastOne = true
                 }
-                cards[index].isFaceUp = true
-                indexOfOneAndOnlyFacedUpCard = nil
-            }  else {
-                for flipDownIndex in cards.indices {
-                    cards[flipDownIndex].isFaceUp = false
-                }
-                cards[index].isFaceUp = true
-                indexOfOneAndOnlyFacedUpCard = index
+                cards[index].isFaceUp = (index == newValue)
             }
         }
     }
@@ -54,5 +43,32 @@ class Concentration {
             cards += [card, card]
         }
         cards.shuffle()
+    }
+    
+    func chooseCard(at index: Int) {
+        if !cards[index].isMatched {
+            flipCount += 1
+            if let matchIndex = indexOfOneAndOnlyFacedUpCard, matchIndex != index {
+                if cards[matchIndex].identifier == cards[index].identifier {
+                    cards[matchIndex].isMatched = true
+                    cards[index].isMatched = true
+                    score += 2
+                }
+                cards[index].isFaceUp = true
+            }  else {
+                indexOfOneAndOnlyFacedUpCard = index
+            }
+        }
+    }
+    
+    deinit {
+        flipCount = 0
+        score = 0
+    }
+}
+
+extension Collection {
+    var oneAndOnly: Element? {
+        return count == 1 ? first : nil
     }
 }
