@@ -13,7 +13,6 @@
 		763F7298222BD36900B9AB9F /* ConcentrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763F7297222BD36900B9AB9F /* ConcentrationViewController.swift */; };
 		763F729A222BD5EF00B9AB9F /* CardModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763F7299222BD5EF00B9AB9F /* CardModel.swift */; };
 		763F729C222BD9AB00B9AB9F /* ConcentrationGameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763F729B222BD9AB00B9AB9F /* ConcentrationGameModel.swift */; };
-		763F729E222BDF8200B9AB9F /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 763F729D222BDF8200B9AB9F /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +24,6 @@
 		763F7297222BD36900B9AB9F /* ConcentrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationViewController.swift; sourceTree = "<group>"; };
 		763F7299222BD5EF00B9AB9F /* CardModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardModel.swift; sourceTree = "<group>"; };
 		763F729B222BD9AB00B9AB9F /* ConcentrationGameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationGameModel.swift; sourceTree = "<group>"; };
-		763F729D222BDF8200B9AB9F /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +67,6 @@
 		763F7296222BD2FC00B9AB9F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				763F729D222BDF8200B9AB9F /* Default-568h@2x.png */,
 				763F7284222BD29700B9AB9F /* AppDelegate.swift */,
 				763F728B222BD29C00B9AB9F /* Assets.xcassets */,
 				763F728D222BD29C00B9AB9F /* LaunchScreen.storyboard */,
@@ -154,7 +151,6 @@
 			files = (
 				763F728F222BD29C00B9AB9F /* LaunchScreen.storyboard in Resources */,
 				763F728C222BD29C00B9AB9F /* Assets.xcassets in Resources */,
-				763F729E222BDF8200B9AB9F /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
