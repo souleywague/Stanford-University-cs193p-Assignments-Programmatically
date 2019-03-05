@@ -20,6 +20,9 @@ class Concentration {
     
     private(set) var score = 0
     
+    private(set) var startDateInterval: Date?
+    private(set) var endDateInterval: Date?
+    
     private var indexOfOneAndOnlyFacedUpCard: Int? {
         get {
             return cards.indices.filter { cards[$0].isFaceUp }.oneAndOnly
@@ -49,15 +52,27 @@ class Concentration {
         if !cards[index].isMatched {
             flipCount += 1
             if let matchIndex = indexOfOneAndOnlyFacedUpCard, matchIndex != index {
+                startDateInterval = Date()
+                print("start: \(startDateInterval!)")
                 if cards[matchIndex].identifier == cards[index].identifier {
+                    endDateInterval = Date()
+                    print("end: \(endDateInterval!)")
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
-                    score += 2
+                    updateScore()
                 }
                 cards[index].isFaceUp = true
             }  else {
                 indexOfOneAndOnlyFacedUpCard = index
             }
+        }
+    }
+    
+    func updateScore() {        
+        if endDateInterval! < startDateInterval! + 2 {
+            score += 4
+        } else {
+            score += 2
         }
     }
     
