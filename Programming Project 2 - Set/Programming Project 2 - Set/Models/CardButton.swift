@@ -62,7 +62,6 @@ class CardButton: UIButton {
     }
     
     private func titleForCard(_ card: Card) -> NSAttributedString {
-        
         /// Shape
         var symbol: String
         
