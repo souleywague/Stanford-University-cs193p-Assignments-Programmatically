@@ -103,7 +103,7 @@ class CardView: UIView {
         isOpaque = false
     }
     
-    /// Drawing a card with all its properties
+    /// Drawing a card with all its properties.
     
     private func setupCard() {
         let cornerRadius = min(bounds.size.width, bounds.size.height) * 0.1
