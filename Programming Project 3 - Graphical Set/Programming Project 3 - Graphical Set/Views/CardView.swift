@@ -230,6 +230,7 @@ class CardView: UIView {
                            y: centerRect.minY,
                            width: sizeOfEachRect.width,
                            height: sizeOfEachRect.height)
+            
             rect2 = CGRect(x: centerRect.maxX,
                            y: centerRect.minY,
                            width: sizeOfEachRect.width,
@@ -255,7 +256,7 @@ class CardView: UIView {
         
         let margin = min(rect.size.width, rect.size.height) * shapeMargin
         
-        let topCenter = CGPoint(x: rect.minX, y: rect.minY + margin)
+        let topCenter = CGPoint(x: rect.midX, y: rect.minY + margin)
         path.move(to: topCenter)
         
         let centerRight = CGPoint(x: rect.maxX - margin, y: rect.midY)
