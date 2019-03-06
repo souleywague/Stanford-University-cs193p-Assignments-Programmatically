@@ -10,11 +10,8 @@
 		761F5D9F222FC50D0001E1C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761F5D9E222FC50D0001E1C9 /* AppDelegate.swift */; };
 		761F5DA6222FC5120001E1C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 761F5DA5222FC5120001E1C9 /* Assets.xcassets */; };
 		761F5DA9222FC5120001E1C9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 761F5DA7222FC5120001E1C9 /* LaunchScreen.storyboard */; };
-		761F5DBF222FC74A0001E1C9 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761F5DBB222FC74A0001E1C9 /* Card.swift */; };
-		761F5DC1222FC74A0001E1C9 /* SetGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761F5DBD222FC74A0001E1C9 /* SetGame.swift */; };
 		761F5DC6222FCB7A0001E1C9 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761F5DC5222FCB7A0001E1C9 /* Grid.swift */; };
 		761F5DCE222FCE5B0001E1C9 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761F5DCD222FCE5B0001E1C9 /* CardView.swift */; };
-		761F5DD0222FE5440001E1C9 /* SetGameViewController1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761F5DCF222FE5440001E1C9 /* SetGameViewController1.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,11 +20,8 @@
 		761F5DA5222FC5120001E1C9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		761F5DA8222FC5120001E1C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		761F5DAA222FC5120001E1C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		761F5DBB222FC74A0001E1C9 /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
-		761F5DBD222FC74A0001E1C9 /* SetGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SetGame.swift; sourceTree = "<group>"; };
 		761F5DC5222FCB7A0001E1C9 /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Grid.swift; path = "../../../../../../cs193p_iOS11-project-3.Graphical-Set/Set/Set/Grid.swift"; sourceTree = "<group>"; };
 		761F5DCD222FCE5B0001E1C9 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
-		761F5DCF222FE5440001E1C9 /* SetGameViewController1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGameViewController1.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,9 +54,7 @@
 		761F5D9D222FC50D0001E1C9 /* Programming Project 3 - Graphical Set */ = {
 			isa = PBXGroup;
 			children = (
-				761F5DB9222FC74A0001E1C9 /* Models */,
 				761F5DCA222FCDDD0001E1C9 /* Views */,
-				761F5DC2222FC7570001E1C9 /* View Controllers */,
 				761F5DB3222FC5E30001E1C9 /* Utilities */,
 				761F5DB0222FC57A0001E1C9 /* Supporting Files */,
 				761F5DAA222FC5120001E1C9 /* Info.plist */,
@@ -86,25 +78,6 @@
 				761F5DC5222FCB7A0001E1C9 /* Grid.swift */,
 			);
 			path = Utilities;
-			sourceTree = "<group>";
-		};
-		761F5DB9222FC74A0001E1C9 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				761F5DBB222FC74A0001E1C9 /* Card.swift */,
-				761F5DBD222FC74A0001E1C9 /* SetGame.swift */,
-			);
-			name = Models;
-			path = "../../Programming Project 2 - Set/Programming Project 2 - Set/Models";
-			sourceTree = "<group>";
-		};
-		761F5DC2222FC7570001E1C9 /* View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				761F5DCF222FE5440001E1C9 /* SetGameViewController1.swift */,
-			);
-			name = "View Controllers";
-			path = "../../Programming Project 2 - Set/Programming Project 2 - Set/View Controllers";
 			sourceTree = "<group>";
 		};
 		761F5DCA222FCDDD0001E1C9 /* Views */ = {
@@ -187,9 +160,6 @@
 			files = (
 				761F5DCE222FCE5B0001E1C9 /* CardView.swift in Sources */,
 				761F5D9F222FC50D0001E1C9 /* AppDelegate.swift in Sources */,
-				761F5DBF222FC74A0001E1C9 /* Card.swift in Sources */,
-				761F5DC1222FC74A0001E1C9 /* SetGame.swift in Sources */,
-				761F5DD0222FE5440001E1C9 /* SetGameViewController1.swift in Sources */,
 				761F5DC6222FCB7A0001E1C9 /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

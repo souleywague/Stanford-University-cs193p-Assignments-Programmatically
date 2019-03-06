@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7617F896222FEDDE00F9FDCD /* CardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7617F895222FEDDE00F9FDCD /* CardButton.swift */; };
 		7693100C222E8CD40094D011 /* SetGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7693100B222E8CD40094D011 /* SetGameViewController.swift */; };
 		76931014222E9ADF0094D011 /* SetGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76931013222E9ADF0094D011 /* SetGame.swift */; };
 		76931017222EA1740094D011 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76931016222EA1740094D011 /* Card.swift */; };
-		76931019222EA5080094D011 /* CardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76931018222EA5080094D011 /* CardButton.swift */; };
 		7693101C222EC1B00094D011 /* CardColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7693101B222EC1B00094D011 /* CardColor.swift */; };
 		76DC094D222E8A9C0060D2B8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DC094C222E8A9C0060D2B8 /* AppDelegate.swift */; };
 		76DC0954222E8A9F0060D2B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76DC0953222E8A9F0060D2B8 /* Assets.xcassets */; };
@@ -18,10 +18,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7617F895222FEDDE00F9FDCD /* CardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardButton.swift; sourceTree = "<group>"; };
 		7693100B222E8CD40094D011 /* SetGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGameViewController.swift; sourceTree = "<group>"; };
 		76931013222E9ADF0094D011 /* SetGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGame.swift; sourceTree = "<group>"; };
 		76931016222EA1740094D011 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
-		76931018222EA5080094D011 /* CardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardButton.swift; sourceTree = "<group>"; };
 		7693101B222EC1B00094D011 /* CardColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardColor.swift; sourceTree = "<group>"; };
 		76DC0949222E8A9C0060D2B8 /* Programming Project 2 - Set.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Programming Project 2 - Set.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		76DC094C222E8A9C0060D2B8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -54,7 +54,7 @@
 			children = (
 				76931016222EA1740094D011 /* Card.swift */,
 				76931013222E9ADF0094D011 /* SetGame.swift */,
-				76931018222EA5080094D011 /* CardButton.swift */,
+				7617F895222FEDDE00F9FDCD /* CardButton.swift */,
 				7693101B222EC1B00094D011 /* CardColor.swift */,
 			);
 			path = Models;
@@ -168,9 +168,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				76DC094D222E8A9C0060D2B8 /* AppDelegate.swift in Sources */,
-				76931019222EA5080094D011 /* CardButton.swift in Sources */,
 				7693101C222EC1B00094D011 /* CardColor.swift in Sources */,
 				76931017222EA1740094D011 /* Card.swift in Sources */,
+				7617F896222FEDDE00F9FDCD /* CardButton.swift in Sources */,
 				7693100C222E8CD40094D011 /* SetGameViewController.swift in Sources */,
 				76931014222E9ADF0094D011 /* SetGame.swift in Sources */,
 			);
