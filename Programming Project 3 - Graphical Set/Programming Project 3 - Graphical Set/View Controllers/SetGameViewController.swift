@@ -8,21 +8,13 @@
 
 import UIKit
 
+///
+/// Main view controller for a Set game.
+///
+
 class SetGameViewController: UIViewController {
     
     // MARK: - User Interface Properties
-    
-    private lazy var topStackView: UIStackView = {
-        let stackView = UIStackView()
-        
-        stackView.axis = .vertical
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 5
-        
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        
-        return stackView
-    }()
     
     private lazy var boardView: UIView = {
         let view = UIView()
@@ -115,6 +107,7 @@ class SetGameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         newGame()
+        setupActionsAndGestures()
     }
     
     override func viewDidLayoutSubviews() {
@@ -134,20 +127,30 @@ class SetGameViewController: UIViewController {
         newGame()
     }
     
-    @objc private func tapCard(recognizer: UITapGestureRecognizer) {
-        guard recognizer.state == .ended else {
-            print("Tap gesture failed.")
-            return
-        }
+    @objc private func tapCard(_ recognizer: UITapGestureRecognizer) {
+        guard recognizer.state == .ended else { return }
         
-        guard let cardView = recognizer.view as? CardView else {
-            print("tapCard not called from a CardView.")
-            return
-        }
+        guard let cardView = recognizer.view as? CardView else { return }
         
         cardView.isSelected = !cardView.isSelected
         
         processBoard()
+    }
+    
+    @objc private func swipeDownToDealCard(_ recognizer: UISwipeGestureRecognizer) {
+        guard recognizer.state == .ended else { return }
+        
+        dealButtonTapped()
+    }
+    
+    @objc private func rotationToReshuffleCardGesture(_ recognizer: UIRotationGestureRecognizer) {
+        guard recognizer.state == .ended else { return }
+
+        cleanUpBoard()
+        
+        game.shuffledOpenCards()
+        
+        updateUI()
     }
     
     // MARK: - SetGame Functions
@@ -162,7 +165,6 @@ class SetGameViewController: UIViewController {
     
     private func updateUI() {
         setupLayout()
-        setupActions()
         updateScoreLabel()
         updateBoard()
         updateBoardView()
@@ -238,14 +240,6 @@ class SetGameViewController: UIViewController {
         return cardView
     }
     
-    private func addGestureRecognizers(_ cardView: CardView) {
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapCard(recognizer:)))
-        
-        tapRecognizer.numberOfTapsRequired = 1
-        tapRecognizer.numberOfTouchesRequired = 1
-        cardView.addGestureRecognizer(tapRecognizer)
-    }
-    
     private func processBoard() {
         cleanUpBoard()
         
@@ -310,34 +304,55 @@ class SetGameViewController: UIViewController {
         return (rows, columns)
     }
     
+    private func addGestureRecognizers(_ cardView: CardView) {
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapCard(_:)))
+        
+        tapRecognizer.numberOfTapsRequired = 1
+        tapRecognizer.numberOfTouchesRequired = 1
+        
+        cardView.addGestureRecognizer(tapRecognizer)
+    }
+    
+    private func addSwipeGestureRecognizer() {
+        let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeDownToDealCard(_:)))
+        
+        swipeRecognizer.direction = .down
+        
+        boardView.addGestureRecognizer(swipeRecognizer)
+    }
+    
+    private func addRotationGestureRecognizer() {
+        let rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(rotationToReshuffleCardGesture(_:)))
+        
+        rotationGesture.rotation = 3
+        
+        boardView.addGestureRecognizer(rotationGesture)
+    }
+    
     // MARK: - Setup Functions
     
-    private func setupActions() {
+    private func setupActionsAndGestures() {
         newGameButton.addTarget(self, action: #selector(newGameButtonTapped), for: .touchUpInside)
         dealButton.addTarget(self, action: #selector(dealButtonTapped), for: .touchUpInside)
+        addSwipeGestureRecognizer()
+        addRotationGestureRecognizer()
     }
     
     private func setupLayout() {
         let safeArea = view.safeAreaLayoutGuide
         
-        view.addSubview(topStackView)
-        topStackView.addSubview(boardView)
-        topStackView.addSubview(bottomStackView)
+        view.addSubview(boardView)
+        view.addSubview(bottomStackView)
         
-        topStackView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
-        topStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
-        topStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
-        topStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
-        
-        boardView.topAnchor.constraint(equalTo: topStackView.topAnchor, constant: 10).isActive = true
-        boardView.leadingAnchor.constraint(equalTo: topStackView.leadingAnchor, constant: 5).isActive = true
-        boardView.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: -5).isActive = true
-        boardView.heightAnchor.constraint(equalTo: topStackView.heightAnchor, multiplier: 0.90).isActive = true
+        boardView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 10).isActive = true
+        boardView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 5).isActive = true
+        boardView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -5).isActive = true
+        boardView.heightAnchor.constraint(equalTo: safeArea.heightAnchor, multiplier: 0.90).isActive = true
         
         bottomStackView.topAnchor.constraint(equalTo: boardView.bottomAnchor, constant: 10).isActive = true
-        bottomStackView.leadingAnchor.constraint(equalTo: topStackView.leadingAnchor, constant: 10).isActive = true
-        bottomStackView.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: -10).isActive = true
-        bottomStackView.bottomAnchor.constraint(equalTo: topStackView.bottomAnchor).isActive = true
+        bottomStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 10).isActive = true
+        bottomStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -10).isActive = true
+        bottomStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
         
         bottomStackView.addArrangedSubview(newGameButton)
         bottomStackView.addArrangedSubview(scoreLabel)

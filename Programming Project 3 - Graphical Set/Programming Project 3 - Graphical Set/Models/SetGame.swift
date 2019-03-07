@@ -111,6 +111,15 @@ struct SetGame {
         return isSet
     }
     
+    /// Shuffle the openCards Set
+    @discardableResult mutating func shuffledOpenCards() -> Set<Card> {
+        let shuffledOpenCards = Set(openCards.shuffled())
+        
+        openCards = shuffledOpenCards
+        
+        return shuffledOpenCards
+    }
+    
     /// Determines how many points different actions take.
     private struct Score {
         private init() {}
