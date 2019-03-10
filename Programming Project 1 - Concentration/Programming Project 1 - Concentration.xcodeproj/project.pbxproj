@@ -56,8 +56,8 @@
 		763F7283222BD29700B9AB9F /* Programming Project 1 - Concentration */ = {
 			isa = PBXGroup;
 			children = (
-				763F729F222BE06D00B9AB9F /* View Controllers */,
 				763F72A0222BE08200B9AB9F /* Models */,
+				763F729F222BE06D00B9AB9F /* View Controllers */,
 				763F7296222BD2FC00B9AB9F /* Supporting Files */,
 				763F7290222BD29C00B9AB9F /* Info.plist */,
 			);
