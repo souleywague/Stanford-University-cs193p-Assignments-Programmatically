@@ -112,7 +112,7 @@ struct SetGame {
     }
     
     /// Shuffle the openCards Set
-    @discardableResult mutating func shuffledOpenCards() -> Set<Card> {
+    @discardableResult mutating func shuffleOpenCards() -> Set<Card> {
         let shuffledOpenCards = Set(openCards.shuffled())
         
         openCards = shuffledOpenCards
