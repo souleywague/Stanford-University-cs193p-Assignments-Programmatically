@@ -23,22 +23,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let themeChooserViewController = ThemeChooserViewController()
         let concentrationGameViewController = ConcentrationGameViewController()
         let setGameViewController = SetGameViewController()
+        
+        let themeChooserNavigationController = UINavigationController(rootViewController: themeChooserViewController)
+        let concentrationGameNavigationController = UINavigationController(rootViewController: concentrationGameViewController)
         let setGameNavigationController = UINavigationController(rootViewController: setGameViewController)
         
-        splitViewController.viewControllers = [themeChooserViewController, concentrationGameViewController]
+        splitViewController.viewControllers = [themeChooserNavigationController, concentrationGameNavigationController]
     
         let tabBarController: UITabBarController = {
             let tabBarController = UITabBarController()
             
             tabBarController.viewControllers = [splitViewController, setGameNavigationController]
             
-            themeChooserViewController.tabBarItem = UITabBarItem(title: "Concentration",
-                                                                 image: UIImage(named: "<#T##String#>"),
-                                                                 tag: 0)
+            splitViewController.tabBarItem = UITabBarItem(title: "Concentration",
+                                                                 image: UIImage(named: "R"),
+                                                                 selectedImage: UIImage(named: "R Selected"))
             
             setGameViewController.tabBarItem = UITabBarItem(title: "Set",
-                                                        image: UIImage(named: "<#T##String#>"),
-                                                        tag: 1)
+                                                            image: UIImage(named: "Y"),
+                                                            selectedImage: UIImage(named: "Y Selected"))
             
             return tabBarController
         }()

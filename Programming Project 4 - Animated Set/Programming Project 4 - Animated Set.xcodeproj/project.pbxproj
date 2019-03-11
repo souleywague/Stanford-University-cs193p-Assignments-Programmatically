@@ -19,6 +19,7 @@
 		7608293D2235431E003E35A6 /* SetGameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7608293C2235431E003E35A6 /* SetGameModel.swift */; };
 		760829432235483D003E35A6 /* SetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760829422235483D003E35A6 /* SetCardView.swift */; };
 		7608294622354910003E35A6 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7608294522354910003E35A6 /* Grid.swift */; };
+		76DD83A92236834B00932A83 /* ConcentrationGameTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76DD83A82236834B00932A83 /* ConcentrationGameTheme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		7608293C2235431E003E35A6 /* SetGameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGameModel.swift; sourceTree = "<group>"; };
 		760829422235483D003E35A6 /* SetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCardView.swift; sourceTree = "<group>"; };
 		7608294522354910003E35A6 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		76DD83A82236834B00932A83 /* ConcentrationGameTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationGameTheme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 			children = (
 				7608293422354087003E35A6 /* ConcentrationCardModel.swift */,
 				7608293622354095003E35A6 /* ConcentrationGameModel.swift */,
+				76DD83A82236834B00932A83 /* ConcentrationGameTheme.swift */,
 			);
 			path = "Concentration Game Models";
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 				7608293D2235431E003E35A6 /* SetGameModel.swift in Sources */,
 				7608292E22353B8B003E35A6 /* ThemeChooserViewController.swift in Sources */,
 				7608291B22352FFE003E35A6 /* AppDelegate.swift in Sources */,
+				76DD83A92236834B00932A83 /* ConcentrationGameTheme.swift in Sources */,
 				7608293522354087003E35A6 /* ConcentrationCardModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

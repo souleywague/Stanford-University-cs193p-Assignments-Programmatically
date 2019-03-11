@@ -18,7 +18,7 @@ struct ConcentrationCard {
     var isMatched = false
     var hasBeenFlippedAtLeastOne = false
     
-    let identifier: Int
+    private var identifier: Int
     
     init() {
         self.identifier = ConcentrationCard.getUniqueIdentifier()
@@ -30,5 +30,16 @@ struct ConcentrationCard {
         identifierFactory += 1
         return identifierFactory
     }
-    
 }
+
+
+// MARK: - Protocol Extensions
+
+extension ConcentrationCard: Hashable {
+    var hashValue: Int { return identifier }
+    
+    static func ==(lhs: ConcentrationCard, rhs: ConcentrationCard) -> Bool {
+        return lhs.identifier == rhs.identifier
+    }
+}
+

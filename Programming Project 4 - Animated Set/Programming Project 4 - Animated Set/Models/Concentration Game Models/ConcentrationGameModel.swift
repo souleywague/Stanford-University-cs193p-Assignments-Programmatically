@@ -27,18 +27,14 @@ class Concentration {
             return cards.indices.filter { cards[$0].isFaceUp }.oneAndOnly
         } set {
             for index in cards.indices {
-                if(cards[index].isFaceUp) {
-                    if !cards[index].isMatched && cards[index].hasBeenFlippedAtLeastOne {
-                        score -= 1
-                    }
-                    cards[index].hasBeenFlippedAtLeastOne = true
-                }
                 cards[index].isFaceUp = (index == newValue)
             }
         }
     }
     
     init(numberOfPairsOfCards: Int) {
+        assert(numberOfPairsOfCards > 0, "Concentration(numberOfPairsOfCards: \(numberOfPairsOfCards): Must provide at least 1 pair of cards.")
+        
         for _ in 1 ... numberOfPairsOfCards {
             let card = ConcentrationCard()
             
@@ -52,7 +48,7 @@ class Concentration {
             flipCount += 1
             if let matchIndex = indexOfOneAndOnlyFacedUpCard, matchIndex != index {
                 startChooseCardTimeLaps = Date()
-                if cards[matchIndex].identifier == cards[index].identifier {
+                if cards[matchIndex] == cards[index] {
                     endChooseCardTimeLaps = Date()
                     cards[matchIndex].isMatched = true
                     cards[index].isMatched = true
@@ -73,10 +69,6 @@ class Concentration {
         }
     }
     
-    deinit {
-        flipCount = 0
-        score = 0
-    }
 }
 
 
