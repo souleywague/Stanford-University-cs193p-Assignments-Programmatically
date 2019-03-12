@@ -14,50 +14,66 @@ import Foundation
 
 struct SetCard {
     
-    /// There are 4 different features a card might have. Each feature's value might vary based
-    /// on the `Variant` options (color, shape, shade, number).
-    init(_ feature1: Variant, _ feature2: Variant, _ feature3: Variant, _ feature4: Variant) {
-        self.feature1 = feature1
-        self.feature2 = feature2
-        self.feature3 = feature3
-        self.feature4 = feature4
-    }
+    // MARK: - Public Properties
     
-    /// Each feature might contain one of three different variants.
-    /// These variants are completely generic and not tied to any specific ones.
-    enum Variant: Int {
-        case v1 = 1
-        case v2 = 2
-        case v3 = 3
-    }
+    let numberOfSymbols: Int
+    let symbol: Int
+    let shading: Int
+    let color: Int
     
-    let feature1: Variant
-    let feature2: Variant
-    let feature3: Variant
-    let feature4: Variant
-}
-
-// MARK: - Protocol conformance extensions
-
-extension SetCard: CustomStringConvertible {
     var description: String {
-        return "[\(feature1.rawValue), \(feature2.rawValue), \(feature3.rawValue), \(feature4.rawValue)]"
+        return "Card(numberOfSymbols: \(numberOfSymbols), symbol: \(symbol), shading: \(shading), color: \(color))"
+    }
+    
+    // MARK: - Card Features
+    
+    private typealias Features = (numberOfSymbols: Int, symbol: Int, shading: Int, color: Int)
+    
+    private static var featuresFactory = [Features]()
+    
+    // builds an array of `Features` filled with unique tuples of random values in the given range
+    private static func makeFeaturesFactory() {
+        let range = SetCard.featuresRange
+        
+        for numberOfSymbols in range {
+            for symbol in range {
+                for shading in range {
+                    for color in range {
+                        featuresFactory.append((numberOfSymbols, symbol, shading, color))
+                    }
+                }
+            }
+        }
+    }
+    
+    private static func getFeatures() -> Features {
+        if featuresFactory.isEmpty {
+            makeFeaturesFactory()
+        }
+        return featuresFactory.removeLast()
+    }
+    
+    // MARK: - Initialization
+    
+    init() {
+        (numberOfSymbols, symbol, shading, color) = SetCard.getFeatures()
     }
 }
+
+// MARK: - Equatable
 
 extension SetCard: Equatable {
+    
     static func ==(lhs: SetCard, rhs: SetCard) -> Bool {
-        return(
-            (lhs.feature1 == rhs.feature1) &&
-                (lhs.feature2 == rhs.feature2) &&
-                (lhs.feature3 == rhs.feature3) &&
-                (lhs.feature4 == rhs.feature4)
-        )
+        return  lhs.numberOfSymbols == rhs.numberOfSymbols &&
+            lhs.symbol == rhs.symbol &&
+            lhs.shading == rhs.shading &&
+            lhs.color == rhs.color
     }
 }
 
-extension SetCard: Hashable {
-    var hashValue: Int {
-        return feature1.rawValue ^ feature2.rawValue ^ feature3.rawValue ^ feature4.rawValue
-    }
+// MARK: - Constants
+
+extension SetCard {
+    private static let featuresRange = 0...2
 }

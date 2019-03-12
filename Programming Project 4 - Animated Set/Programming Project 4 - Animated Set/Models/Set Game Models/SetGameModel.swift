@@ -20,125 +20,226 @@ import Foundation
 
 struct SetGame {
     
+    // MARK: - Private Properties
+    
+    private(set) var cardsInDeck = [SetCard]()
+    private(set) var cardsOnTable = [SetCard]()
+    private(set) var matchedCards = [SetCard]()
+    private(set) var selectedCards = [SetCard]()
+    private(set) var hintedCards = [SetCard]()
+    
+    private(set) var currentTurn = DateInterval(start: Date(), end: Date())
     private(set) var score = 0
     
-    private(set) var deck = Set<SetCard>()
+    // MARK: - Common Actions
     
-    private(set) var openCards = Set<SetCard>()
-    
-    init() {
-        populateDeck()
+    /// Deals cards, moving them from the deck to the table;
+    /// removes selection;
+    /// changes `score` if "deal three more cards" option is used.
+    ///
+    /// Precondition: `numberOfCards` > 0
+    mutating func deal(numberOfCards: Int) {
+        precondition(numberOfCards > 0, "Game.deal(numberOfCards: \(numberOfCards)), number of cards must be > 0")
+        
+        // penalty for using "deal 3 cards" option when you can form a "Set"
+        if numberOfCards == SetGameConstants.numberOfCardsInSet, let _ = formSet(from: cardsOnTable) {
+            addPoints(for: .dealThreeCards)
+            selectedCards.removeAll()
+        }
+        
+        // deal cards
+        for _ in 1...numberOfCards {
+            if !cardsInDeck.isEmpty {
+                cardsOnTable.append(cardsInDeck.removeFirst())
+            }
+        }
     }
     
-    /// Populate the deck of cards.
-    private mutating func populateDeck() {
-        for feature1 in 1...3 {
-            for feature2 in 1...3 {
-                for feature3 in 1...3 {
-                    for feature4 in 1...3 {
-                        deck.insert(
-                            SetCard(
-                                SetCard.Variant(rawValue: feature1)!,
-                                SetCard.Variant(rawValue: feature2)!,
-                                SetCard.Variant(rawValue: feature3)!,
-                                SetCard.Variant(rawValue: feature4)!
-                            )
-                        )
+    /// Removes selecte cards from the table and put it right to the matched cards.
+    private mutating func moveFromSelectedToMatched(cards: [SetCard]) {
+        matchedCards.removeAll()
+        for card in cards {
+            if let index = cardsOnTable.index(of: card) {
+                matchedCards.append(cardsOnTable.remove(at: index))
+            }
+        }
+        selectedCards.removeAll()
+    }
+    
+    enum CardsPlacement {
+        case inDeck, onTable
+    }
+    
+    /// Shuffles all cards in `cardsInDeck`.
+    mutating func shuffleCards(_ placement: CardsPlacement) {
+        if placement == .onTable {
+            guard selectedCards.count != SetGameConstants.numberOfCardsInSet else { return }
+        }
+        
+        var cardsToShuffle = (placement == .inDeck ? cardsInDeck : cardsOnTable)
+        guard !cardsToShuffle.isEmpty else { return }
+        
+        var shuffledCards = [SetCard]()
+        for _ in 1...cardsToShuffle.count {
+            let randomCard = cardsToShuffle.remove(at: cardsToShuffle.count.arc4random)
+            shuffledCards.append(randomCard)
+        }
+        
+        switch placement {
+        case .inDeck: cardsInDeck = shuffledCards
+        case .onTable: cardsOnTable = shuffledCards
+        }
+        selectedCards.removeAll()
+    }
+    
+    /// Performs a "selection/deselection" of cards, changing `score` according to game rules.
+    ///
+    /// Precondition: `card` must be from the `cardsOnTable`
+    mutating func select(card: SetCard) {
+        precondition(cardsOnTable.contains(card), "Game.select(card: \(card)), chosen card is not on the table")
+        
+        // clear selection after previously not matched "Set"
+        if selectedCards.count == SetGameConstants.numberOfCardsInSet {
+            selectedCards.removeAll()
+        }
+        
+        // select/deselect a card
+        if selectedCards.contains(card) {
+            selectedCards.remove(at: selectedCards.index(of: card)!)
+            addPoints(for: .deselection)
+        } else {
+            selectedCards.append(card)
+        }
+        
+        // check for "Set"
+        if selectedCards.count == SetGameConstants.numberOfCardsInSet {
+            if canFormSet(from: selectedCards) {
+                // remove matched "Set" and deal a new one
+                moveFromSelectedToMatched(cards: selectedCards)
+                
+                for _ in 1...SetGameConstants.numberOfCardsInSet {
+                    deal(numberOfCards: 1)
+                }
+                addPoints(for: .selectionMatched)
+            } else {
+                // "Set" didnt match
+                addPoints(for: .selectionDidNotMatch)
+            }
+        }
+    }
+    
+    private enum CardAction {
+        case deselection, dealThreeCards, selectionMatched, selectionDidNotMatch, hint
+    }
+    
+    /// Changes `score` of the current player depending on the action:
+    /// * `deselection` (-1)
+    /// * `dealThreeCards` (-1)
+    /// * `selectionMatched` (+3 / +1) \*
+    /// * `selectionDidNotMatch` (-5)
+    /// * `hint` (-1)
+    ///
+    /// \* (+1) If current turn is longer than a 3 seconds.
+    private mutating func addPoints(for action: CardAction) {
+        switch action {
+        case .deselection:
+            score += SetGamePoints.deselection
+        case .dealThreeCards:
+            score += SetGamePoints.dealThreeCards
+        case .hint:
+            score += SetGamePoints.hint
+        case .selectionDidNotMatch:
+            currentTurn.end = Date()
+            score += SetGamePoints.didNotMatch
+        case .selectionMatched:
+            currentTurn.end = Date()
+            score += currentTurn.duration < SetGameConstants.timeLimitForMatchMax ?
+                SetGamePoints.matchMax : SetGamePoints.matchMin
+        }
+    }
+    
+    /// Returns three random matching `cards`, taken from the given cards, that form a "Set";
+    /// if there is no "Set" available in the given cards, returns nil.
+    ///
+    /// Precondition: `cards.count` >= `GameConstants.minNumberOfCardsInSet`
+    func formSet(from cards: [SetCard]) -> [SetCard]? {
+        precondition(cards.count >= SetGameConstants.numberOfCardsInSet, "Game.formSet(from cards: \(cards)). There must be at least three cards to from a set.")
+        
+        for card1 in cards {
+            for card2 in cards {
+                for card3 in cards {
+                    if card1 != card2 && card1 != card3 && card2 != card3 {
+                        if canFormSet(from: [card1, card2, card3]) {
+                            return [card1, card2, card3]
+                        }
                     }
                 }
             }
         }
-    }
-    
-    /// Draw `n` number of random cards from the `deck`, and place them into the `openCards` list.
-    @discardableResult mutating func draw(n: Int) -> Set<SetCard> {
-        var newCards = Set<SetCard>()
-        
-        for _ in 1...n {
-            if let newCard = deck.removeRandomElement() {
-                newCards.insert(newCard)
-            } else {
-                break
-            }
-        }
-        
-        for card in newCards {
-            openCards.insert(card)
-        }
-        return newCards
-    }
-    
-    /// Draw one random card from the `deck`, and place it into the `openCards` list.
-    mutating func draw() -> SetCard? {
-        if let newCard = deck.removeRandomElement() {
-            openCards.insert(newCard)
-            return newCard
-        }
         return nil
     }
     
-    /// Evaluate the given cards. Return whether or not they are a valid set.
-    mutating func evaluateSet(_ card1: SetCard, _ card2: SetCard, _ card3: SetCard) -> Bool {
-        if !openCards.contains(card1) || !openCards.contains(card2) || !openCards.contains(card3) {
-            print("evaluateSet() -> Given cards are not in play")
-            return false
-        }
+    /// Returns a Boolean value indicating whether the given `cards` form a "Set".
+    ///
+    /// Precondition: `cards.count` == `GameConstants.minNumberOfCardsInSet`
+    func canFormSet(from cards: [SetCard]) -> Bool {
+        precondition(cards.count == SetGameConstants.numberOfCardsInSet, "Game.canFormSet(from cards: \(cards). There must be exactly three cards to check.")
         
-        func evaluate(_ v1: SetCard.Variant, _ v2: SetCard.Variant, _ v3: SetCard.Variant) -> Bool {
-            return (v1 == v2 && v1 == v3) || ((v1 != v2) && (v1 != v3) && (v2 != v3))
-        }
+        let card1 = cards[0], card2 = cards[1], card3 = cards[2]
         
-        let feature1 = evaluate(card1.feature1, card2.feature1, card3.feature1)
-        let feature2 = evaluate(card1.feature2, card2.feature2, card3.feature2)
-        let feature3 = evaluate(card1.feature3, card2.feature3, card3.feature3)
-        let feature4 = evaluate(card1.feature4, card2.feature4, card3.feature4)
+        let numberOfSymbols = (card1.numberOfSymbols == card2.numberOfSymbols) && (card1.numberOfSymbols == card3.numberOfSymbols)
+        let symbols = (card1.symbol == card2.symbol) && (card1.symbol == card3.symbol)
+        let shading = (card1.shading == card2.shading) && (card1.shading == card3.shading)
+        let color = (card1.color == card2.color) && (card1.color == card3.color)
         
-        let isSet = (feature1 && feature2 && feature3 && feature4)
-        
-        score += (isSet ? Score.validSet : Score.invalidSet)
-        
-        if isSet {
-            if let index = openCards.firstIndex(of: card1) {
-                openCards.remove(at: index)
-            }
-            if let index = openCards.firstIndex(of: card2) {
-                openCards.remove(at: index)
-            }
-            if let index = openCards.firstIndex(of: card3) {
-                openCards.remove(at: index)
-            }
-        }
-        return isSet
+        return numberOfSymbols || symbols || shading || color
     }
     
-    /// Shuffle the openCards Set
-    @discardableResult mutating func shuffleOpenCards() -> Set<SetCard> {
-        let shuffledOpenCards = Set(openCards.shuffled())
-        
-        openCards = shuffledOpenCards
-        
-        return shuffledOpenCards
+    /// Adds three random matching cards on the table to `hintedCards`, if there is any.
+    mutating func addHint() {
+        if cardsOnTable.count >= SetGameConstants.numberOfCardsInSet, let cards = formSet(from: cardsOnTable) {
+            selectedCards.removeAll()
+            hintedCards.append(contentsOf: cards)
+            addPoints(for: .hint)
+        }
     }
     
-    /// Determines how many points different actions take.
-    private struct Score {
-        private init() {}
-        static let validSet = +3
-        static let invalidSet = -5
+    mutating func removeHint() {
+        hintedCards.removeAll()
+    }
+    
+    // MARK: - Initizalization
+    
+    /// Creates a shuffled deck of cards.
+    ///
+    /// Precondition: `numberOfCards` >= `GameConstants.numberOfCardsFirstDeal`
+    init(numberOfCards: Int) {
+        precondition(numberOfCards >= SetGameConstants.numberOfCardsFirstDeal, "Game.init(numberOfCards: \(numberOfCards)), number of cards must be >= \(SetGameConstants.numberOfCardsFirstDeal)")
+        
+        for _ in 1...numberOfCards {
+            cardsInDeck.append(SetCard())
+        }
+        shuffleCards(.inDeck)
     }
 }
 
-// MARK: - Extensions
+// MARK: - Constants
 
-extension Set {
-    mutating func removeRandomElement() -> Element? {
-        let n = Int(arc4random_uniform(UInt32(self.count)))
-        let index = self.index(self.startIndex, offsetBy: n)
-        if self.count > 0 {
-            let element = self.remove(at: index)
-            return element
-        } else {
-            return nil
-        }
+extension SetGame {
+    struct SetGameConstants {
+        static let maxNumberOfCardsInDeck = 81
+        static let numberOfCardsFirstDeal = 12
+        static let numberOfCardsInSet = 3
+        static let standardTurnLength: TimeInterval = 5.0
+        static let bonusTime: TimeInterval = 3.0
+        static let timeLimitForMatchMax: TimeInterval = 3.0
+    }
+    struct SetGamePoints {
+        static let deselection = -1
+        static let dealThreeCards = -1
+        static let hint = -1
+        static let didNotMatch = -5
+        static let matchMax = 3
+        static let matchMin = 1
     }
 }

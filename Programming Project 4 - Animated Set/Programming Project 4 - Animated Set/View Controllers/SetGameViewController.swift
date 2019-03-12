@@ -16,377 +16,365 @@ class SetGameViewController: UIViewController {
     
     // MARK: - User Interface Properties
     
-    private lazy var boardView: UIView = {
-        let view = UIView()
+    private lazy var setCardStackView: SetCardStackView = {
+        let setCardStackView = SetCardStackView()
         
-        view.translatesAutoresizingMaskIntoConstraints = false
+        setCardStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        return view
+        return setCardStackView
     }()
     
-    private lazy var bottomStackView: UIStackView = {
-        let stackView = UIStackView()
+    private lazy var newSetCardsPileButton: UIButton = {
+        let newSetCardsPileButton = UIButton()
         
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.spacing = 5
+        newSetCardsPileButton.layer.cornerRadius = 5.0
+        newSetCardsPileButton.layer.borderWidth = 2.0
         
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        newSetCardsPileButton.translatesAutoresizingMaskIntoConstraints = false
         
-        return stackView
+        return newSetCardsPileButton
     }()
     
-    private lazy var scoreLabel: UILabel = {
-        let label = UILabel()
+    private lazy var discardSetCardsPileButton: UIButton = {
+        let discardSetCardsPileButton = UIButton()
         
-        label.text? = "Score: \(game.score)"
+        discardSetCardsPileButton.layer.cornerRadius = 5.0
+        discardSetCardsPileButton.layer.borderWidth = 2.0
+        discardSetCardsPileButton.layer.borderColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+        discardSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         
-        label.font = .systemFont(ofSize: 20)
-        label.textAlignment = .center
-        label.layer.cornerRadius = .pi
-        label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        label.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        discardSetCardsPileButton.translatesAutoresizingMaskIntoConstraints = false
         
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
-        return label
-    }()
-    
-    private lazy var dealButton: UIButton = {
-        let button = UIButton()
-        
-        button.setTitle("Deal", for: .normal)
-        
-        button.titleLabel?.font = .systemFont(ofSize: 20)
-        
-        button.setTitleColor(#colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1), for: .normal)
-        button.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        button.layer.cornerRadius = .pi
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        
-        return button
+        return discardSetCardsPileButton
     }()
     
     private lazy var newGameButton: UIButton = {
         let button = UIButton()
         
         button.setTitle("New Game", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 20)
+        button.setTitleColor(.white, for: .normal)
         
-        button.titleLabel?.font = .systemFont(ofSize: 20)
-        
-        button.setTitleColor(#colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1), for: .normal)
-        button.backgroundColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-        button.layer.cornerRadius = .pi
+        button.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        button.layer.cornerRadius = 5.0
         
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
     }()
     
-    // MARK: - SetGame Properties
+    private lazy var dealThreeCardsButton: UIButton = {
+        let button = UIButton()
+        
+        button.setTitle("Deal", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 20)
+        button.setTitleColor(.white, for: .normal)
+        
+        button.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        button.layer.cornerRadius = 5.0
+        
+        button.isEnabled = false
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
     
-    private var game: SetGame!
+    private lazy var hintButton: UIButton = {
+        let button = UIButton()
+        
+        button.setTitle("Hint", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 20)
+        button.setTitleColor(.white, for: .normal)
+        
+        button.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        button.layer.cornerRadius = 5.0
+        
+        button.isEnabled = false
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        
+        return button
+    }()
     
-    private lazy var board: [SetCard:SetCardView] = [:]
+    private lazy var scoreLabel: UILabel = {
+        let label = UILabel()
+        
+        label.font = .boldSystemFont(ofSize: 25)
+        
+        label.textColor = .black
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        label.text = "Score: \(game.score)"
+        
+        return label
+    }()
     
-    private let initialCards = 9
+    // MARK: - Set Game Properties
     
-    private var selectedCards: [SetCard] {
-        var result = [SetCard]()
-        for (card, cardView) in board {
-            if cardView.isSelected {
-                result.append(card)
-            }
-        }
-        return result
-    }
+    private var game = SetGame(numberOfCards: SetGame.SetGameConstants.maxNumberOfCardsInDeck)
     
-    // MARK: - View Life Cycle
+    private weak var timer: Timer?
+    
+    // MARK: SetCard Animation
+    
+    lazy var animator = UIDynamicAnimator(referenceView: setCardStackView)
+    lazy var cardBehavior = SetCardBehavior(in: animator)
+    
+    // MARK: - View Controller Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        newGame()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        
+        animator.delegate = setCardStackView
         setupLayout()
-        setupActionsAndGestures()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        updateUI()
+        
+        setCardStackView.newCardsStartFrom = setCardStackView.convert(newSetCardsPileButton.frame,
+                                                                      from: newSetCardsPileButton.superview)
+        
+        setCardStackView.discardedCardsGoTo = setCardStackView.convert(discardSetCardsPileButton.frame,
+                                                                       from: discardSetCardsPileButton.superview)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        guard !game.cardsOnTable.isEmpty else { return }
+        
+        coordinator.animate(alongsideTransition: nil) { (finished) in
+            self.cardBehavior.updateCardsOnTable(in: self.setCardStackView)
+        }
     }
     
     // MARK: - Actions
     
-    @objc private func dealButtonTapped() {
-        cleanUpBoard()
-        game.draw(n: 3)
-        updateUI()
-    }
-    
-    @objc private func newGameButtonTapped() {
-        newGame()
-    }
-    
-    @objc private func tapCard(_ recognizer: UITapGestureRecognizer) {
-        guard recognizer.state == .ended else { return }
+    @objc private func startGame(_ sender: UIButton) {
+        view.bringSubviewToFront(setCardStackView)
+        setCardStackView.cardViews.forEach { $0.removeFromSuperview() }
         
-        guard let cardView = recognizer.view as? SetCardView else { return }
+        game = SetGame(numberOfCards: SetGame.SetGameConstants.maxNumberOfCardsInDeck)
+        game.deal(numberOfCards: SetGame.SetGameConstants.numberOfCardsFirstDeal)
+        updateViewFromModel(for: .dealing)
+    }
+    
+    @objc private func dealThreeCardsButtonTouched(_ sender: UIButton) {
+        dealThreeCards()
+    }
+    
+    @objc private func dealThreeCards() {
+        guard !game.cardsOnTable.isEmpty else { return }
+        guard !game.cardsInDeck.isEmpty else { return }
+        guard game.selectedCards.count != SetGame.SetGameConstants.numberOfCardsInSet else { return }
         
-        cardView.isSelected = !cardView.isSelected
-        
-        processBoard()
+        game.deal(numberOfCards: SetGame.SetGameConstants.numberOfCardsInSet)
+        updateViewFromModel(for: .dealing)
     }
     
-    @objc private func swipeDownToDealCard(_ recognizer: UISwipeGestureRecognizer) {
-        guard recognizer.state == .ended else { return }
-        
-        dealButtonTapped()
+    @objc private func showHint(_ sender: UIButton) {
+        if setCardStackView.cardViews.filter({ $0.state == .hinted }).isEmpty {
+            game.addHint()
+            updateViewFromModel(for: .highlighting)
+            game.removeHint()
+        }
     }
     
-    @objc private func rotationToReshuffleCardGesture(_ recognizer: UIRotationGestureRecognizer) {
-        guard recognizer.state == .ended else { return }
-        // TODO: Implement the UI update after game.openCards is shuffled.
-    }
-    
-    // MARK: - SetGame Functions
-    
-    private func newGame() {
-        boardView.subviews.forEach { $0.removeFromSuperview() }
-        board = [:]
-        game = SetGame()
-        game.draw(n: initialCards)
-        updateUI()
-    }
-    
-    private func updateUI() {
-        updateScoreLabel()
-        updateBoard()
-        updateBoardView()
-    }
-    
-    private func updateScoreLabel() {
+    @objc private func updateSetGameScoreLabel() {
         scoreLabel.text = "Score: \(game.score)"
     }
     
-    private func updateBoard() {
-        for card in game.openCards {
-            if board[card] == nil {
-                board[card] = getCardView(for: card)
+    // MARK: - Set Game Methods
+    
+    private func updateViewFromModel(for action: SetGameAction) {
+        updateSetGameScoreLabel()
+        updateButtons()
+        updateCardViewsStatus()
+        updateCardViewsWithCardsOnTable(for: action)
+    }
+    
+    @objc private func updateButtons() {
+        // New Game
+        if game.cardsOnTable.isEmpty {
+            newGameButton.backgroundColor = #colorLiteral(red: 0.6666666865, green: 0.6666666865, blue: 0.6666666865, alpha: 1)
+        } else {
+            newGameButton.backgroundColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+        }
+        
+        // Hint
+        if game.hintedCards.isEmpty && game.cardsOnTable.count > SetGame.SetGameConstants.numberOfCardsInSet && game.selectedCards.count != SetGame.SetGameConstants.numberOfCardsInSet {
+            hintButton.isEnabled = true
+        } else {
+            hintButton.isEnabled = false
+        }
+        
+        // Deal 3 cards
+        if game.selectedCards.count != SetGame.SetGameConstants.numberOfCardsInSet && !game.cardsInDeck.isEmpty {
+            dealThreeCardsButton.isEnabled = true
+        } else {
+            dealThreeCardsButton.isEnabled = false
+        }
+        
+        // New Cards Pile
+        if game.cardsInDeck.isEmpty {
+            newSetCardsPileButton.layer.borderColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+            newSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        } else {
+            newSetCardsPileButton.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            newSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+        }
+        
+        // Discarded Cards Pile
+        if game.matchedCards.isEmpty {
+            discardSetCardsPileButton.layer.borderColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+            discardSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        } else {
+            discardSetCardsPileButton.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            discardSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+        }
+    }
+    
+    private func updateCardViewsStatus() {
+        for cardView in setCardStackView.cardViews {
+            let setCard = cardView.card!
+            
+            if game.selectedCards.contains(setCard) {
+                if game.selectedCards.count < SetGame.SetGameConstants.numberOfCardsInSet {
+                    setCardStackView.setCardViewState(.selected, for: setCard)
+                } else {
+                    setCardStackView.setCardViewState(.mismatched, for: setCard)
+                }
+            } else if game.hintedCards.contains(setCard) {
+                setCardStackView.setCardViewState(.hinted, for: setCard)
+            } else if game.matchedCards.contains(setCard) {
+                setCardStackView.setCardViewState(.matched, for: setCard)
+            } else {
+                setCardStackView.setCardViewState(.normal, for: setCard)
             }
         }
     }
     
-    private func updateBoardView() {
-        guard let grid = gridForCurrentBoard() else { return }
-        
-        for (i, card) in board.enumerated() {
-            if let cardFrame = grid[i] {
-                
-                let cardView = card.value
-                
-                let margin = min(cardFrame.width, cardFrame.height) * 0.05
-                cardView.frame = cardFrame.insetBy(dx: margin, dy: margin)
-                
-                if !boardView.subviews.contains(cardView) {
-                    boardView.addSubview(cardView)
+    private func updateCardViewsWithCardsOnTable(for action: SetGameAction) {
+        switch action {
+        case .touching:
+            guard game.cardsOnTable != setCardStackView.cardViews.map({ $0.card! }) else { break }
+            
+            setCardStackView.matchedCards.forEach { setCardView in
+                setCardView.needsToRemoveFromTable = true
+                cardBehavior.bounceAround(setCardView)
+            }
+            
+            timer?.invalidate()
+            timer = Timer.scheduledTimer(
+                withTimeInterval: 3.0,
+                repeats: false,
+                block: { (_) in
+                    self.setCardStackView.matchedCards.forEach { setCardView in
+                        self.cardBehavior.snapToDiscardedPile(setCardView)
+                    }
+                }
+            )
+            fallthrough
+        case .dealing:
+            game.cardsOnTable.forEach {
+                if setCardStackView.getCardView(with: $0) == nil {
+                    setCardStackView.addCardView(with: $0)
+                    addTapGesture(to: setCardStackView.getCardView(with: $0)!)
                 }
             }
-        }
-    }
-    
-    private func gridForCurrentBoard() -> Grid? {
-        let (rows, columns) = getRowsAndColumns(numberOfCards: board.count)
-        
-        guard rows > 0, columns > 0 else { return nil }
-        
-        return Grid(layout: .dimensions(rowCount: rows, columnCount: columns), frame: boardView.bounds)
-    }
-    
-    private func getCardView(for card: SetCard) -> SetCardView {
-        let cardView = SetCardView(frame: CGRect())
-        
-        switch card.feature1 {
-        case .v1: cardView.color = .red
-        case .v2: cardView.color = .purple
-        case .v3: cardView.color = .green
-        }
-        
-        switch card.feature2 {
-        case .v1: cardView.shade = .solid
-        case .v2: cardView.shade = .shaded
-        case .v3: cardView.shade = .unfilled
-        }
-        
-        switch card.feature3 {
-        case .v1: cardView.shape = .oval
-        case .v2: cardView.shape = .diamond
-        case .v3: cardView.shape = .squiggle
-        }
-        
-        switch card.feature4 {
-        case .v1: cardView.elements = .one
-        case .v2: cardView.elements = .two
-        case .v3: cardView.elements = .three
-        }
-        
-        addGestureRecognizers(cardView)
-        
-        return cardView
-    }
-    
-    private func processBoard() {
-        cleanUpBoard()
-        
-        if selectedCards.count == 3 {
-            let isSet = game.evaluateSet(selectedCards[0], selectedCards[1], selectedCards[2])
-            
-            if isSet {
-                match(selectedCards)
-            } else {
-                mismatch(selectedCards)
+            cardBehavior.updateCardsOnTable(in: setCardStackView)
+        case .shuffling:
+            game.cardsOnTable.forEach { setCard in
+                if let setCardView = setCardStackView.getCardView(with: setCard) {
+                    setCardStackView.sendSubviewToBack(setCardView)
+                }
             }
-            updateUI()
+            cardBehavior.updateCardsOnTable(in: setCardStackView)
+        case .highlighting:
+            break
         }
     }
     
-    private func cleanUpBoard() {
-        for (card, cardView) in board {
-            if !game.openCards.contains(card) {
-                board.removeValue(forKey: card)
-                cardView.removeFromSuperview()
-                updateUI()
-            }
-            cardView.cardState = .regular
+    // MARK: - Gestures
+    
+    private func addTapGesture(to setCardView: SetCardView) {
+        let tap = UITapGestureRecognizer(target: self,
+                                         action: #selector(touchCardView(_:)))
+        
+        setCardView.addGestureRecognizer(tap)
+    }
+    
+    @objc private func touchCardView(_ recognizer: UITapGestureRecognizer) {
+        guard let setCardView = recognizer.view as? SetCardView else { return }
+        
+        switch recognizer.state {
+        case .changed, .ended:
+            game.select(card: setCardView.card!)
+            updateViewFromModel(for: .touching)
+        default:
+            break
         }
     }
     
-    private func match(_ cards: [SetCard]) {
-        for card in cards {
-            if let cardView = board[card] {
-                cardView.isSelected = false
-                cardView.cardState = .matched
-            }
+    @objc private func shuffleCards(_ recognizer: UITapGestureRecognizer) {
+        guard game.selectedCards.count != SetGame.SetGameConstants.numberOfCardsInSet else { return }
+        guard !game.cardsOnTable.isEmpty else { return }
+        
+        switch recognizer.state {
+        case .ended:
+            game.shuffleCards(.onTable)
+            updateViewFromModel(for: .shuffling)
+        default:
+            break
         }
     }
     
-    private func mismatch(_ cards: [SetCard]) {
-        for card in cards {
-            if let cardView = board[card] {
-                cardView.isSelected = false
-                cardView.cardState = .mismatched
-            }
-        }
-    }
-    
-    private func getRowsAndColumns(numberOfCards: Int) -> (rows: Int, columns: Int) {
-        if numberOfCards <= 0 {
-            return (0, 0)
-        }
-        
-        var rows = Int(sqrt(Double(numberOfCards)))
-        
-        if (rows * rows) < numberOfCards {
-            rows += 1
-        }
-        
-        var columns = rows
-        
-        if (rows * (columns - 1)) >= numberOfCards {
-            columns -= 1
-        }
-        
-        return (rows, columns)
-    }
-    
-    private func addGestureRecognizers(_ cardView: SetCardView) {
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapCard(_:)))
-        
-        tapRecognizer.numberOfTapsRequired = 1
-        tapRecognizer.numberOfTouchesRequired = 1
-        
-        cardView.addGestureRecognizer(tapRecognizer)
-    }
-    
-    private func addSwipeGestureRecognizer() {
-        let swipeRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(swipeDownToDealCard(_:)))
-        
-        swipeRecognizer.direction = .down
-        
-        boardView.addGestureRecognizer(swipeRecognizer)
-    }
-    
-    private func addRotationGestureRecognizer() {
-        let rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(rotationToReshuffleCardGesture(_:)))
-        
-        rotationGesture.rotation = 3
-        
-        boardView.addGestureRecognizer(rotationGesture)
-    }
     
     // MARK: - Setup Functions
     
     private func setupActionsAndGestures() {
-        newGameButton.addTarget(self, action: #selector(newGameButtonTapped), for: .touchUpInside)
-        dealButton.addTarget(self, action: #selector(dealButtonTapped), for: .touchUpInside)
-        addSwipeGestureRecognizer()
-        addRotationGestureRecognizer()
+        let rotation = UIRotationGestureRecognizer(target: self, action: #selector(shuffleCards(_:)))
+        setCardStackView.addGestureRecognizer(rotation)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dealThreeCards))
+        newSetCardsPileButton.addGestureRecognizer(tap)
+        
     }
     
     private func setupLayout() {
         let safeArea = view.safeAreaLayoutGuide
         
-        view.addSubview(boardView)
-        view.addSubview(bottomStackView)
+        view.addSubview(setCardStackView)
         
-        boardView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 10).isActive = true
-        boardView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 5).isActive = true
-        boardView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -5).isActive = true
-        boardView.heightAnchor.constraint(equalTo: safeArea.heightAnchor, multiplier: 0.90).isActive = true
-        
-        bottomStackView.topAnchor.constraint(equalTo: boardView.bottomAnchor, constant: 10).isActive = true
-        bottomStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 10).isActive = true
-        bottomStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -10).isActive = true
-        bottomStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
-        
-        bottomStackView.addArrangedSubview(newGameButton)
-        bottomStackView.addArrangedSubview(scoreLabel)
-        bottomStackView.addArrangedSubview(dealButton)
+        setCardStackView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+        setCardStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+        setCardStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+        setCardStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
     }
 }
 
-// MARK: - CardView Extension
+// MARK: - Extensions
 
-fileprivate extension SetCardView {
-    enum CardState {
-        case regular, matched, mismatched
-    }
-    
-    var cardState: CardState {
-        get {
-            if layer.borderColor == #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1).cgColor {
-                return .mismatched
-            } else if layer.borderColor == #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1).cgColor {
-                return .matched
-            } else {
-                return .regular
-            }
-        } set {
-            switch newValue {
-            case .regular:
-                layer.borderWidth = 0.0
-                layer.borderColor = UIColor.clear.cgColor
-            case .matched:
-                layer.borderWidth = bounds.width * 0.1
-                layer.borderColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1).cgColor
-            case .mismatched:
-                layer.borderWidth = bounds.width * 0.1
-                layer.borderColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1).cgColor
+private enum SetGameAction {
+    case touching, dealing, shuffling, highlighting
+}
+
+// MARK: - Protocol Extensions
+
+extension SetGameViewController: UIDynamicAnimatorDelegate {
+    func dynamicAnimatorDidPause(_ animator: UIDynamicAnimator) {
+        animator.items(in: view.bounds).forEach { item in
+            if let setCardView = item as? SetCardView, setCardView.needsToRemoveFromTable {
+                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0,
+                                                               delay: 0,
+                                                               options: [], animations: {},
+                                                               completion: cardBehavior.flipOver(setCardView))
             }
         }
     }
 }
+
+

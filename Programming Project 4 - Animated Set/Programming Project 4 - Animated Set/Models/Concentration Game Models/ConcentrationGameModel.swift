@@ -70,11 +70,3 @@ class Concentration {
     }
     
 }
-
-// MARK: - Extensions
-
-extension Collection {
-    var oneAndOnly: Element? {
-        return count == 1 ? first : nil
-    }
-}

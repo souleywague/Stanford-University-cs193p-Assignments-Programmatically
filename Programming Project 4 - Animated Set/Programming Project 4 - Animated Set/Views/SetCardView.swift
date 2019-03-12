@@ -10,320 +10,255 @@ import UIKit
 
 class SetCardView: UIView {
     
-    // MARK: - Card Type
+    // MARK: - Card Stack View
     
-    enum Color: Int {
-        case green, red, purple
-    }
-    
-    enum Shade {
-        case solid, shaded, unfilled
-    }
-    
-    enum Elements {
-        case one, two, three
-    }
-    
-    enum Shape {
-        case squiggle, diamond, oval
-    }
+    weak var cardStackView: SetCardStackView?
     
     // MARK: - Card Properties
     
-    var color: Color? {
-        didSet {
-            setNeedsDisplay()
-        }
+    var card: SetCard?
+    
+    var isFaceUp = false { didSet { setNeedsDisplay(); setNeedsLayout() } }
+    var brandNew = true
+    var needsToRemoveFromTable = false
+    
+    var state: CardState = .normal {
+        didSet { setNeedsDisplay(); setNeedsLayout() }
+    }
+    enum CardState {
+        case normal, selected, matched, mismatched, hinted
     }
     
-    var shade: Shade? {
-        didSet {
-            setNeedsDisplay()
-        }
+    lazy var features: Features = getCardFeatures()
+    typealias Features = (
+        shape: String, numberOfSymbols: Int, shading: String, color: UIColor
+    )
+    private func getCardFeatures() -> Features {
+        let shape = CardFeatures.Shape.all[card!.symbol]
+        let numberOfSymbols = CardFeatures.numberOfSymbols[card!.numberOfSymbols]
+        let shading  = CardFeatures.Fill.all[card!.shading]
+        let color = CardFeatures.color[card!.color]
+        return (shape, numberOfSymbols, shading, color)
     }
     
-    var elements: Elements? {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
+    // MARK: - Initialization
     
-    var shape: Shape? {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    var isSelected: Bool = false {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    // MARK: - Overriden Properties
-    
-    override var frame: CGRect {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    // MARK: Overriden Functions
-    
-    override func draw(_ rect: CGRect) {
-        setupCard()
+    init(card: SetCard, cardStackView: SetCardStackView, rect: CGRect) {
+        super.init(frame: rect)
         
-        guard color != nil, shade != nil, elements != nil, shape != nil else {
-            print("All features must be set. Cannot draw card.")
-            return
-        }
+        self.card = card
+        self.cardStackView = cardStackView
         
-        for rect in getRects(for: elements!) {
-            drawContent(rect: rect, shape: shape!, color: color!, shade: shade!)
-        }
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        initialSetup()
+        backgroundColor = UIColor.clear
+        isOpaque = false
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        initialSetup()
     }
     
-    // MARK: - Private Properties
+    // MARK: - Drawing a Card
     
-    private let shapeMargin: CGFloat = 0.15
-    
-    // MARK: - Private Methods
-    
-    private func initialSetup() {
-        isOpaque = false
-    }
-    
-    /// Drawing a card with all its properties.
-    
-    private func setupCard() {
-        let cornerRadius = min(bounds.size.width, bounds.size.height) * 0.1
+    // main drawing function
+    override func draw(_ rect: CGRect) {
+        // card background
+        let roundedRect = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
+        let cardBackgroundColor = isFaceUp ? #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 1) : #colorLiteral(red: 0.6666666865, green: 0.6666666865, blue: 0.6666666865, alpha: 1)
+        cardBackgroundColor.setFill()
+        roundedRect.addClip()
+        roundedRect.fill()
+        alpha = 0.3
         
-        let cardPath = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
-        
-        cardPath.addClip()
-        
-        UIColor.white.setFill()
-        
-        if isSelected {
-            cardPath.lineWidth = min(bounds.size.width, bounds.size.height) * 0.1
-            #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1).setStroke()
-        } else {
-            cardPath.lineWidth = min(bounds.size.width, bounds.size.height) * 0.1
-            UIColor.lightGray.setStroke()
-        }
-        
-        cardPath.fill()
-        cardPath.stroke()
-    }
-    
-    private func path(forShape shape: Shape, in rect: CGRect) -> UIBezierPath {
-        switch shape {
-        case .diamond:
-            return diamondPath(in: rect)
-        case .oval:
-            return ovalPath(in: rect)
-        case .squiggle:
-            return squigglePath(in: rect)
+        if isFaceUp {
+            // a colorful border
+            drawBorder()
+            
+            // symbols
+            let shape = CardFeatures.Shape(rawValue: features.shape)!
+            let rects = getRectsForSymbols()
+            for rect in rects {
+                draw(shape, in: rect)
+            }
         }
     }
     
-    private func strokeColor(for color: Color) -> UIColor {
-        switch color {
-        case .green:
-            return #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
-        case .purple:
-            return #colorLiteral(red: 0.6377331317, green: 0, blue: 0.7568627596, alpha: 1)
-        case .red:
-            return #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+    /// Setting up a colorful border depending on the `state`.
+    private func drawBorder() {
+        alpha = 1.0
+        layer.cornerRadius = 8.0
+        layer.borderWidth = 2.0
+        
+        switch state {
+        case .normal:
+            layer.borderColor = CardBorder.normal // UIColor.clear.cgColor
+            layer.borderWidth = 0.0
+        case .selected:
+            layer.borderColor = CardBorder.selected // UIColor.blue.cgColor
+        case .matched:
+            layer.borderColor = CardBorder.matched // UIColor.green.cgColor
+        case .mismatched:
+            layer.borderColor = CardBorder.mismatched // UIColor.red.cgColor
+        case .hinted:
+            layer.borderColor = CardBorder.hinted // UIColor.yellow.cgColor
         }
     }
     
-    private func fillColor(for color: Color, with shade: Shade) -> UIColor {
-        let stroke = strokeColor(for: color)
-        
-        switch shade {
-        case .solid:
-            return stroke.withAlphaComponent(1.0)
-        case .shaded:
-            return stroke.withAlphaComponent(0.2)
-        case .unfilled:
-            return stroke.withAlphaComponent(0.0)
-        }
+    // if in runtime font size is changing (via Accessebility), we need to redraw
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        setNeedsDisplay()   // redraw view's contents (view + subviews)
+        setNeedsLayout()    // adjust layout of view's subviews
     }
     
-    private func drawContent(rect: CGRect, shape: Shape, color: Color, shade: Shade) {
-        let shapePath = path(forShape: shape, in: rect)
-        
-        let stroke = strokeColor(for: color)
-        
-        let fill = fillColor(for: color, with: shade)
-        
-        stroke.setStroke()
-        fill.setFill()
-        
-        shapePath.lineWidth = min(rect.size.width, rect.size.height) * 0.05
-        
-        shapePath.fill()
-        shapePath.stroke()
-    }
-    
-    /// Rects for number of elements on a card.
-    
-    private func getRects(for elements: Elements) -> [CGRect] {
-        let maxOfWidthAndHeight = max(bounds.size.width, bounds.size.height)
-        let sizeOfEachRect = CGSize(width: maxOfWidthAndHeight/3, height: maxOfWidthAndHeight/3)
-        
+    /// Returns an array of rectangles for all the card symbols. Each rectangle has a proper size and position for further drawing a symbol inside 'self'.
+    private func getRectsForSymbols() -> [CGRect] {
         var rects = [CGRect]()
         
-        switch elements {
-        case .one:
-            rects.append(rectForOneElement(sizeOfEachRect: sizeOfEachRect))
-        case .two:
-            rects += rectForTwoElements(sizeOfEachRect: sizeOfEachRect)
-        case .three:
-            rects += rectsForThreeElements(sizeOfEachRect: sizeOfEachRect)
+        switch features.numberOfSymbols {
+        case 1:
+            rects.append(rectForOneSymbol(center: bounds.secondThird.center))
+        case 2:
+            rects.append(rectForOneSymbol(center: bounds.firstHalf.center))
+            rects.append(rectForOneSymbol(center: bounds.secondHalf.center))
+        case 3:
+            rects.append(rectForOneSymbol(center: bounds.firstThird.center))
+            rects.append(rectForOneSymbol(center: bounds.secondThird.center))
+            rects.append(rectForOneSymbol(center: bounds.thirdThird.center))
+        default:
+            break
         }
         return rects
     }
     
-    private func rectForOneElement(sizeOfEachRect: CGSize) -> CGRect {
-        let x = bounds.midX - sizeOfEachRect.width / 2
-        let y = bounds.midY - sizeOfEachRect.height / 2
-        
-        let originPoint = CGPoint(x: x, y: y)
-        
-        return CGRect(origin: originPoint, size: sizeOfEachRect)
-    }
-    
-    private func rectForTwoElements(sizeOfEachRect: CGSize) -> [CGRect] {
-        let rectForOne = rectForOneElement(sizeOfEachRect: sizeOfEachRect)
-        
-        let rect1, rect2: CGRect
-        
-        if bounds.width > bounds.height {
-            rect1 = rectForOne.offsetBy(dx: sizeOfEachRect.width/2, dy: 0)
-            rect2 = rectForOne.offsetBy(dx: -(sizeOfEachRect.width/2), dy: 0)
+    /// Returns a rectangle, centered by 'center' point, with proper size for drawing a symbol inside.
+    private func rectForOneSymbol(center: CGPoint) -> CGRect {
+        var size = CGSize()
+        if bounds.width <= bounds.height {
+            size.height = bounds.height * SizeRatio.symbolHeightToCardHeightWhenVertical
+            size.width = size.height * SizeRatio.symbolWidthToHeight
         } else {
-            rect1 = rectForOne.offsetBy(dx: 0, dy: sizeOfEachRect.height/2)
-            rect2 = rectForOne.offsetBy(dx: 0, dy: -(sizeOfEachRect.height/2))
+            size.width = bounds.width * SizeRatio.symbolWidthToCardWidthWhenHorizontal
+            size.height = size.width / SizeRatio.symbolWidthToHeight
         }
-        return [rect1, rect2]
+        let origin = center.offsetBy(dx: -size.width/2, dy: -size.height/2)
+        return CGRect(origin: origin, size: size)
     }
     
-    private func rectsForThreeElements(sizeOfEachRect: CGSize) -> [CGRect] {
-        let centerRect = rectForOneElement(sizeOfEachRect: sizeOfEachRect)
+    /// Performs complete drawing of the given shape.
+    private func draw(_ shape: CardFeatures.Shape, in rect: CGRect) {
+        let path = getPath(of: shape, in: rect)
         
-        let rect1, rect2: CGRect
+        path.lineWidth = SizeRatio.symbolOutlineWidth
+        features.color.setStroke()
+        path.stroke()
         
-        if bounds.width > bounds.height {
-            rect1 = CGRect(x: centerRect.minX - sizeOfEachRect.width,
-                           y: centerRect.minY,
-                           width: sizeOfEachRect.width,
-                           height: sizeOfEachRect.height)
-            
-            rect2 = CGRect(x: centerRect.maxX,
-                           y: centerRect.minY,
-                           width: sizeOfEachRect.width,
-                           height: sizeOfEachRect.height)
-        } else {
-            rect1 = CGRect(x: centerRect.minX,
-                           y: centerRect.minY - sizeOfEachRect.height,
-                           width: sizeOfEachRect.width,
-                           height: sizeOfEachRect.height)
-            
-            rect2 = CGRect(x: centerRect.minX,
-                           y: centerRect.maxY,
-                           width: sizeOfEachRect.width,
-                           height: sizeOfEachRect.height)
+        let shading = CardFeatures.Fill(rawValue: features.shading)!
+        switch shading {
+        case .none:
+            break
+        case .stripe:
+            let context = UIGraphicsGetCurrentContext()!
+            context.saveGState()
+            path.addClip()
+            let stripes = getPathOfStripes(in: rect)
+            stripes.lineWidth = SizeRatio.stripeWidth
+            stripes.stroke()
+            context.restoreGState()
+        case .solid:
+            features.color.setFill()
+            path.fill()
         }
-        return [centerRect, rect1, rect2]
     }
     
-    /// UIBezierPath for shapes that fits inside a given rect. The paths contains margin spaces.
-    
-    private func diamondPath(in rect: CGRect) -> UIBezierPath {
-        let path = UIBezierPath()
+    /// Returns path of one of the 'Card' symbols.
+    private func getPath(of shape: CardFeatures.Shape, in rect: CGRect) -> UIBezierPath {
+        var path = UIBezierPath()
         
-        let margin = min(rect.size.width, rect.size.height) * shapeMargin
+        let origin = rect.origin
+        let width = rect.width
+        let height = rect.height
         
-        let topCenter = CGPoint(x: rect.midX, y: rect.minY + margin)
-        path.move(to: topCenter)
-        
-        let centerRight = CGPoint(x: rect.maxX - margin, y: rect.midY)
-        path.addLine(to: centerRight)
-        
-        let bottomCenter = CGPoint(x: rect.midX, y: rect.maxY - margin)
-        path.addLine(to: bottomCenter)
-        
-        let centerLeft = CGPoint(x: rect.minX + margin, y: rect.midY)
-        path.addLine(to: centerLeft)
-        
-        path.close()
+        switch shape {
+        case .diamond:
+            path.move(to: origin.offsetBy(dx: 0, dy: height/2))
+            path.addLine(to: origin.offsetBy(dx: width/2, dy: 0))
+            path.addLine(to: origin.offsetBy(dx: width, dy: height/2))
+            path.addLine(to: origin.offsetBy(dx: width/2, dy: height))
+            path.close()
+            
+        case .squiggle:
+            path.move(to: origin.offsetBy(dx: 0, dy: height/2))
+            path.addQuadCurve(to: origin.offsetBy(dx: width/3, dy: 0),
+                              controlPoint: origin)
+            path.addCurve(to: origin.offsetBy(dx: width*(5/6), dy: height/8),
+                          controlPoint1: origin.offsetBy(dx: width*(4/9), dy: 0),
+                          controlPoint2: origin.offsetBy(dx: width*(2/3), dy: height/2))
+            path.addCurve(to: origin.offsetBy(dx: width, dy: height/2),
+                          controlPoint1: origin.offsetBy(dx: width*(5/6), dy: 0),
+                          controlPoint2: origin.offsetBy(dx: width, dy: 0))
+            
+            path.addQuadCurve(to: origin.offsetBy(dx: width*(2/3), dy: height),
+                              controlPoint: origin.offsetBy(dx: width, dy: height))
+            path.addCurve(to: origin.offsetBy(dx: width*(1/6), dy: height*(7/8)),
+                          controlPoint1: origin.offsetBy(dx: width*(5/9), dy: height),
+                          controlPoint2: origin.offsetBy(dx: width/3, dy: height/2))
+            path.addCurve(to: origin.offsetBy(dx: 0, dy: height/2),
+                          controlPoint1: origin.offsetBy(dx: width*(1/6), dy: height),
+                          controlPoint2: origin.offsetBy(dx: 0, dy: height))
+            
+        case .oval:
+            path = UIBezierPath(ovalIn: rect)
+        }
         
         return path
     }
     
-    private func ovalPath(in rect: CGRect) -> UIBezierPath {
-        let margin = min(rect.size.width, rect.size.height) * shapeMargin
-        
-        let rectWithMargin = CGRect(x: rect.origin.x + margin,
-                                    y: rect.origin.y + margin,
-                                    width: rect.size.width - (margin * 2),
-                                    height: rect.size.height - (margin * 2))
-        
-        return UIBezierPath(ovalIn: rectWithMargin)
-    }
-    
-    private func squigglePath(in rect: CGRect) -> UIBezierPath {
-        let margin = min(rect.size.width, rect.size.height) * shapeMargin
-        let drawingRect = rect.insetBy(dx: margin, dy: margin)
-        
+    /// Returns path for "horizontal striping" effect.
+    private func getPathOfStripes(in rect:CGRect) -> UIBezierPath {
         let path = UIBezierPath()
-        var point, cp1, cp2: CGPoint
         
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.05, y: drawingRect.origin.y + drawingRect.size.height*0.40)
-        path.move(to: point)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.35, y: drawingRect.origin.y + drawingRect.size.height*0.25)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.09, y: drawingRect.origin.y + drawingRect.size.height*0.15)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.18, y: drawingRect.origin.y + drawingRect.size.height*0.10)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.75, y: drawingRect.origin.y + drawingRect.size.height*0.30)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.40, y: drawingRect.origin.y + drawingRect.size.height*0.30)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.60, y: drawingRect.origin.y + drawingRect.size.height*0.45)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.97, y: drawingRect.origin.y + drawingRect.size.height*0.35)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.87, y: drawingRect.origin.y + drawingRect.size.height*0.15)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.98, y: drawingRect.origin.y + drawingRect.size.height*0.00)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.45, y: drawingRect.origin.y + drawingRect.size.height*0.85)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.95, y: drawingRect.origin.y + drawingRect.size.height*1.10)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.50, y: drawingRect.origin.y + drawingRect.size.height*0.95)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.25, y: drawingRect.origin.y + drawingRect.size.height*0.85)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.40, y: drawingRect.origin.y + drawingRect.size.height*0.80)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.35, y: drawingRect.origin.y + drawingRect.size.height*0.75)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
-        point = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.05, y: drawingRect.origin.y + drawingRect.size.height*0.40)
-        cp1 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.00, y: drawingRect.origin.y + drawingRect.size.height*1.10)
-        cp2 = CGPoint(x: drawingRect.origin.x + drawingRect.size.width*0.005, y: drawingRect.origin.y + drawingRect.size.height*0.60)
-        path.addCurve(to: point, controlPoint1: cp1, controlPoint2: cp2)
-        
+        let origin = rect.origin
+        var dy: CGFloat = 0
+        while dy < rect.height {
+            path.move(to: origin.offsetBy(dx: 0, dy: dy))
+            path.addLine(to: origin.offsetBy(dx: rect.width, dy: dy))
+            dy += SizeRatio.stripeWidth + 1
+        }
         return path
+    }
+}
+
+// MARK: - Constants
+
+extension SetCardView {
+    private struct CardFeatures {
+        enum Shape: String {
+            case diamond, squiggle, oval
+            static let all = ["diamond", "squiggle", "oval"]
+        }
+        enum Fill: String {
+            case none, stripe, solid
+            static let all = ["none", "stripe", "solid"]
+        }
+        static let numberOfSymbols = [1, 2, 3]
+        static let color = [#colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), #colorLiteral(red: 0, green: 0.9768045545, blue: 0, alpha: 1), #colorLiteral(red: 0.5791940689, green: 0.1280144453, blue: 0.5726861358, alpha: 1)] // [UIColor.red, UIColor.green, UIColor.purple]
+    }
+    private struct CardBorder {
+        static let normal: CGColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+        static let selected: CGColor = #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
+        static let matched: CGColor = #colorLiteral(red: 0, green: 0.9768045545, blue: 0, alpha: 1)
+        static let mismatched: CGColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+        static let hinted: CGColor = #colorLiteral(red: 0.9994240403, green: 0.9855536819, blue: 0, alpha: 1)
+    }
+    struct SizeRatio {
+        fileprivate static let cornerRadiusToBoundsHeight: CGFloat = 0.06
+        fileprivate static let symbolHeightToCardHeightWhenVertical: CGFloat = 0.20
+        fileprivate static let symbolWidthToCardWidthWhenHorizontal: CGFloat = 0.28
+        fileprivate static let symbolWidthToHeight: CGFloat = 8/5
+        fileprivate static let symbolOutlineWidth: CGFloat = 2.0
+        fileprivate static let stripeWidth: CGFloat = 0.2
+        static let cardWidthToHeightRatio: CGFloat = 5/8
+    }
+    private var cornerRadius: CGFloat {
+        return bounds.size.height * SizeRatio.cornerRadiusToBoundsHeight
     }
 }
