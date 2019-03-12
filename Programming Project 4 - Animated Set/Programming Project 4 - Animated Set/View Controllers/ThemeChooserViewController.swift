@@ -131,7 +131,7 @@ class ThemeChooserViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .always
         navigationItem.title = "Themes"
 
-        setupDelegates()
+        setupDelegate()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -183,7 +183,7 @@ class ThemeChooserViewController: UIViewController {
         themeChooserStackView.addArrangedSubview(foodThemeButton)
     }
     
-    private func setupDelegates() {
+    private func setupDelegate() {
         if let splitViewController = tabBarController?.viewControllers?.first as? UISplitViewController,
             let navigationViewController = splitViewController.viewControllers.last as? UINavigationController,
             let concentrationViewController = navigationViewController.viewControllers.first as? ConcentrationGameViewController {

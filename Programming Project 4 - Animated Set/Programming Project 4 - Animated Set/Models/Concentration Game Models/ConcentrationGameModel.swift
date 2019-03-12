@@ -71,7 +71,6 @@ class Concentration {
     
 }
 
-
 // MARK: - Extensions
 
 extension Collection {

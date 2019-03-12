@@ -134,6 +134,8 @@ class ConcentrationGameViewController: UIViewController {
     // MARK: - Actions
     
     @objc private func touchCard(_ sender: UIButton) {
+        UIView.transition(with: sender, duration: 0.3, options: .transitionFlipFromLeft, animations: nil, completion: nil)
+        
         if let cardNumber = cardButtons.firstIndex(of: sender) {
             game.chooseCard(at: cardNumber)
             updateUIFromModel()
@@ -258,7 +260,6 @@ class ConcentrationGameViewController: UIViewController {
     }
     
 }
-
 
 // MARK: - Protocol Conformance Extensions
 
