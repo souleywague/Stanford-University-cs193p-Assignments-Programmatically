@@ -150,8 +150,6 @@ class SetGameViewController: UIViewController {
     
     @objc private func rotationToReshuffleCardGesture(_ recognizer: UIRotationGestureRecognizer) {
         guard recognizer.state == .ended else { return }
-        cleanUpBoard()
-        game.shuffleOpenCards()
         // TODO: Implement the UI update after game.openCards is shuffled.
     }
     

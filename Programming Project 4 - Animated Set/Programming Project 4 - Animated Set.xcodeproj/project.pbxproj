@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7600027E2237AD5C00D763D3 /* ThemeChooserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7600027D2237AD5C00D763D3 /* ThemeChooserDelegate.swift */; };
 		7608291B22352FFE003E35A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7608291A22352FFE003E35A6 /* AppDelegate.swift */; };
 		7608292222353002003E35A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7608292122353002003E35A6 /* Assets.xcassets */; };
 		7608292522353002003E35A6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7608292322353002003E35A6 /* LaunchScreen.storyboard */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7600027D2237AD5C00D763D3 /* ThemeChooserDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeChooserDelegate.swift; sourceTree = "<group>"; };
 		7608291722352FFE003E35A6 /* Programming Project 4 - Animated Set.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Programming Project 4 - Animated Set.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7608291A22352FFE003E35A6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7608292122353002003E35A6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -51,6 +53,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7600027F2237AD6200D763D3 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				7600027D2237AD5C00D763D3 /* ThemeChooserDelegate.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		7608290E22352FFE003E35A6 = {
 			isa = PBXGroup;
 			children = (
@@ -73,6 +83,7 @@
 				76082939223540DE003E35A6 /* Models */,
 				7608293322353BCC003E35A6 /* View Controllers */,
 				7608294422354845003E35A6 /* Views */,
+				7600027F2237AD6200D763D3 /* Protocols */,
 				7608294722354916003E35A6 /* Utilities */,
 				7608292C22353027003E35A6 /* Supporting Files */,
 				7608292622353002003E35A6 /* Info.plist */,
@@ -217,6 +228,7 @@
 				7608293222353BC3003E35A6 /* ConcentrationGameViewController.swift in Sources */,
 				760829432235483D003E35A6 /* SetCardView.swift in Sources */,
 				7608293722354095003E35A6 /* ConcentrationGameModel.swift in Sources */,
+				7600027E2237AD5C00D763D3 /* ThemeChooserDelegate.swift in Sources */,
 				7608294622354910003E35A6 /* Grid.swift in Sources */,
 				7608293B223541F0003E35A6 /* SetCardModel.swift in Sources */,
 				7608293022353BB3003E35A6 /* SetGameViewController.swift in Sources */,

@@ -111,14 +111,10 @@ class ConcentrationGameViewController: UIViewController {
     
     private var emoji = [ConcentrationCard: String]()
     
-
-    
     // MARK: - View Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationItem.title = theme.name
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New Game",
                                                             style: .done,
@@ -155,6 +151,8 @@ class ConcentrationGameViewController: UIViewController {
     private func initialSetup() {
         game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1)/2)
         
+        navigationItem.title = theme.name
+        navigationItem.largeTitleDisplayMode = .never
         view.backgroundColor = theme.boardColor
         
         mapCardsToEmojis()
@@ -252,12 +250,22 @@ class ConcentrationGameViewController: UIViewController {
         concentrationStackView.topAnchor.constraint(equalTo: flipCountLabel.bottomAnchor, constant: 5).isActive = true
         concentrationStackView.leadingAnchor.constraint(equalTo: topStackView.leadingAnchor, constant: 5).isActive = true
         concentrationStackView.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: -5).isActive = true
-        concentrationStackView.heightAnchor.constraint(equalTo: topStackView.heightAnchor, multiplier: 0.90).isActive = true
+        concentrationStackView.bottomAnchor.constraint(equalTo: topStackView.bottomAnchor, constant: -5).isActive = true
         
         horizontalStackViews.forEach { stackView in
             concentrationStackView.addArrangedSubview(stackView)
         }
     }
     
+}
+
+
+// MARK: - Protocol Conformance Extensions
+
+extension ConcentrationGameViewController: ThemeChooserDelegate {
+    func didChooseTheme(_ theme: Theme) {
+        self.theme = theme
+        initialSetup()
+    }
 }
 

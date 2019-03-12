@@ -28,6 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let concentrationGameNavigationController = UINavigationController(rootViewController: concentrationGameViewController)
         let setGameNavigationController = UINavigationController(rootViewController: setGameViewController)
         
+            
         splitViewController.viewControllers = [themeChooserNavigationController, concentrationGameNavigationController]
     
         let tabBarController: UITabBarController = {
