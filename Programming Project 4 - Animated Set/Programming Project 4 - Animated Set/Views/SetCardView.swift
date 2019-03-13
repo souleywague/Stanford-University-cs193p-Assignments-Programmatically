@@ -63,7 +63,7 @@ class SetCardView: UIView {
     override func draw(_ rect: CGRect) {
         // card background
         let roundedRect = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
-        let cardBackgroundColor = isFaceUp ? #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 1) : #colorLiteral(red: 0.6666666865, green: 0.6666666865, blue: 0.6666666865, alpha: 1)
+        let cardBackgroundColor = isFaceUp ? #colorLiteral(red: 0.9999960065, green: 1, blue: 1, alpha: 1) : #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         cardBackgroundColor.setFill()
         roundedRect.addClip()
         roundedRect.fill()

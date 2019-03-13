@@ -16,12 +16,41 @@ class SetGameViewController: UIViewController {
     
     // MARK: - User Interface Properties
     
+    private lazy var topStackView: UIStackView = {
+        let stackView = UIStackView()
+        
+        stackView.axis = .vertical
+        stackView.distribution = .fillProportionally
+        
+        stackView.spacing = 5
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stackView
+    }()
+    
     private lazy var setCardStackView: SetCardStackView = {
         let setCardStackView = SetCardStackView()
+        
+        setCardStackView.backgroundColor = #colorLiteral(red: 0.9070902034, green: 0.9070902034, blue: 0.9070902034, alpha: 1)
         
         setCardStackView.translatesAutoresizingMaskIntoConstraints = false
         
         return setCardStackView
+    }()
+    
+    private lazy var bottomStackView: UIStackView = {
+        let stackView = UIStackView()
+        
+        stackView.axis = .horizontal
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 5
+        
+        stackView.backgroundColor = .white
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stackView
     }()
     
     private lazy var newSetCardsPileButton: UIButton = {
@@ -51,11 +80,11 @@ class SetGameViewController: UIViewController {
     private lazy var newGameButton: UIButton = {
         let button = UIButton()
         
-        button.setTitle("New Game", for: .normal)
+        button.setTitle("Start Game", for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 20)
         button.setTitleColor(.white, for: .normal)
         
-        button.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         button.layer.cornerRadius = 5.0
         
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -67,10 +96,10 @@ class SetGameViewController: UIViewController {
         let button = UIButton()
         
         button.setTitle("Deal", for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 15)
         button.setTitleColor(.white, for: .normal)
         
-        button.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.01176470611, blue: 0.5607843399, alpha: 1)
         button.layer.cornerRadius = 5.0
         
         button.isEnabled = false
@@ -84,10 +113,10 @@ class SetGameViewController: UIViewController {
         let button = UIButton()
         
         button.setTitle("Hint", for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 20)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 15)
         button.setTitleColor(.white, for: .normal)
         
-        button.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        button.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
         button.layer.cornerRadius = 5.0
         
         button.isEnabled = false
@@ -128,7 +157,13 @@ class SetGameViewController: UIViewController {
         super.viewDidLoad()
         
         animator.delegate = setCardStackView
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         setupLayout()
+        setupActionsAndGestures()
     }
     
     override func viewDidLayoutSubviews() {
@@ -162,7 +197,7 @@ class SetGameViewController: UIViewController {
         updateViewFromModel(for: .dealing)
     }
     
-    @objc private func dealThreeCardsButtonTouched(_ sender: UIButton) {
+    @objc private func dealThreeCardsButtonTapped(_ sender: UIButton) {
         dealThreeCards()
     }
     
@@ -196,12 +231,14 @@ class SetGameViewController: UIViewController {
         updateCardViewsWithCardsOnTable(for: action)
     }
     
-    @objc private func updateButtons() {
+    private func updateButtons() {
         // New Game
         if game.cardsOnTable.isEmpty {
-            newGameButton.backgroundColor = #colorLiteral(red: 0.6666666865, green: 0.6666666865, blue: 0.6666666865, alpha: 1)
+            newGameButton.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
+            newGameButton.setTitle("Start Game", for: .normal)
         } else {
-            newGameButton.backgroundColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+            newGameButton.backgroundColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
+            newGameButton.setTitle("New Game", for: .normal)
         }
         
         // Hint
@@ -332,7 +369,6 @@ class SetGameViewController: UIViewController {
         }
     }
     
-    
     // MARK: - Setup Functions
     
     private func setupActionsAndGestures() {
@@ -342,18 +378,47 @@ class SetGameViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dealThreeCards))
         newSetCardsPileButton.addGestureRecognizer(tap)
         
+        newGameButton.addTarget(self, action: #selector(startGame(_:)), for: .touchUpInside)
+        dealThreeCardsButton.addTarget(self, action: #selector(dealThreeCardsButtonTapped(_:)), for: .touchUpInside)
+        hintButton.addTarget(self, action: #selector(showHint(_:)), for: .touchUpInside)
+        
     }
     
     private func setupLayout() {
         let safeArea = view.safeAreaLayoutGuide
         
-        view.addSubview(setCardStackView)
+        view.addSubview(topStackView)
+        topStackView.addSubview(setCardStackView)
+        topStackView.addSubview(bottomStackView)
+        topStackView.addSubview(scoreLabel)
         
-        setCardStackView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
-        setCardStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
-        setCardStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
-        setCardStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+        topStackView.topAnchor.constraint(equalTo: safeArea.topAnchor).isActive = true
+        topStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
+        topStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
+        topStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -10).isActive = true
+        
+        scoreLabel.topAnchor.constraint(equalTo: topStackView.topAnchor).isActive = true
+        scoreLabel.leadingAnchor.constraint(equalTo: topStackView.leadingAnchor, constant: 5).isActive = true
+        scoreLabel.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: -5).isActive = true
+        scoreLabel.heightAnchor.constraint(equalTo: topStackView.heightAnchor, multiplier: 0.10).isActive = true
+        
+        setCardStackView.topAnchor.constraint(equalTo: scoreLabel.bottomAnchor).isActive = true
+        setCardStackView.leadingAnchor.constraint(equalTo: topStackView.leadingAnchor, constant: 5).isActive = true
+        setCardStackView.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: -5).isActive = true
+        setCardStackView.heightAnchor.constraint(equalTo: topStackView.heightAnchor, multiplier: 0.80).isActive = true
+        
+        bottomStackView.topAnchor.constraint(equalTo: setCardStackView.bottomAnchor, constant: 5).isActive = true
+        bottomStackView.leadingAnchor.constraint(equalTo: topStackView.leadingAnchor, constant: 5).isActive = true
+        bottomStackView.trailingAnchor.constraint(equalTo: topStackView.trailingAnchor, constant: -5).isActive = true
+        bottomStackView.heightAnchor.constraint(equalTo: topStackView.heightAnchor, multiplier: 0.10).isActive = true
+        
+        bottomStackView.addArrangedSubview(newSetCardsPileButton)
+        bottomStackView.addArrangedSubview(discardSetCardsPileButton)
+        bottomStackView.addArrangedSubview(newGameButton)
+        bottomStackView.addArrangedSubview(dealThreeCardsButton)
+        bottomStackView.addArrangedSubview(hintButton)
     }
+    
 }
 
 // MARK: - Extensions

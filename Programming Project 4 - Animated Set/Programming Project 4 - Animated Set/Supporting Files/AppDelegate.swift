@@ -25,16 +25,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let setGameViewController = SetGameViewController()
         
         let themeChooserNavigationController = UINavigationController(rootViewController: themeChooserViewController)
-        let concentrationGameNavigationController = UINavigationController(rootViewController: concentrationGameViewController)
-        let setGameNavigationController = UINavigationController(rootViewController: setGameViewController)
-        
+        let concentrationGameNavigationController = UINavigationController(rootViewController: concentrationGameViewController)        
             
         splitViewController.viewControllers = [themeChooserNavigationController, concentrationGameNavigationController]
     
         let tabBarController: UITabBarController = {
             let tabBarController = UITabBarController()
             
-            tabBarController.viewControllers = [splitViewController, setGameNavigationController]
+            tabBarController.viewControllers = [splitViewController, setGameViewController]
             
             splitViewController.tabBarItem = UITabBarItem(title: "Concentration",
                                                                  image: UIImage(named: "R"),
