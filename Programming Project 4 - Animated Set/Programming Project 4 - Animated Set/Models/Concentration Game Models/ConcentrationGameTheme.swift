@@ -8,11 +8,16 @@
 
 import UIKit
 
+///
+/// Models a "Concentration" game theme
+///
+
 struct Theme {
     
     var name: String
     
     var boardColor: UIColor
+    
     var cardColor: UIColor
     
     var emojis: [String]

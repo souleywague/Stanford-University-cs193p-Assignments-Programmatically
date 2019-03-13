@@ -31,7 +31,7 @@ struct SetCard {
     
     private static var featuresFactory = [Features]()
     
-    // builds an array of `Features` filled with unique tuples of random values in the given range
+    // Builds an array of "Features" filled with unique tuples of random values in the given range
     private static func makeFeaturesFactory() {
         let range = SetCard.featuresRange
         
@@ -60,7 +60,7 @@ struct SetCard {
     }
 }
 
-// MARK: - Equatable
+// MARK: - Protocol Conformance Extensions
 
 extension SetCard: Equatable {
     
@@ -72,7 +72,7 @@ extension SetCard: Equatable {
     }
 }
 
-// MARK: - Constants
+// MARK: - Extensions
 
 extension SetCard {
     private static let featuresRange = 0...2

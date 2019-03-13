@@ -31,23 +31,18 @@ struct SetGame {
     private(set) var currentTurn = DateInterval(start: Date(), end: Date())
     private(set) var score = 0
     
-    // MARK: - Common Actions
+    // MARK: - Basic Actions
     
-    /// Deals cards, moving them from the deck to the table;
-    /// removes selection;
-    /// changes `score` if "deal three more cards" option is used.
-    ///
-    /// Precondition: `numberOfCards` > 0
     mutating func deal(numberOfCards: Int) {
         precondition(numberOfCards > 0, "Game.deal(numberOfCards: \(numberOfCards)), number of cards must be > 0")
         
-        // penalty for using "deal 3 cards" option when you can form a "Set"
+        // Penalty for using "deal 3 cards" option when you can form a "Set"
         if numberOfCards == SetGameConstants.numberOfCardsInSet, let _ = formSet(from: cardsOnTable) {
             addPoints(for: .dealThreeCards)
             selectedCards.removeAll()
         }
         
-        // deal cards
+        // Deal cards
         for _ in 1...numberOfCards {
             if !cardsInDeck.isEmpty {
                 cardsOnTable.append(cardsInDeck.removeFirst())
@@ -98,12 +93,12 @@ struct SetGame {
     mutating func select(card: SetCard) {
         precondition(cardsOnTable.contains(card), "Game.select(card: \(card)), chosen card is not on the table")
         
-        // clear selection after previously not matched "Set"
+        // Clear selection after previously not matched "Set"
         if selectedCards.count == SetGameConstants.numberOfCardsInSet {
             selectedCards.removeAll()
         }
         
-        // select/deselect a card
+        // Select/deselect a card
         if selectedCards.contains(card) {
             selectedCards.remove(at: selectedCards.index(of: card)!)
             addPoints(for: .deselection)
@@ -111,10 +106,10 @@ struct SetGame {
             selectedCards.append(card)
         }
         
-        // check for "Set"
+        // Check for "Set"
         if selectedCards.count == SetGameConstants.numberOfCardsInSet {
             if canFormSet(from: selectedCards) {
-                // remove matched "Set" and deal a new one
+                // Remove matched "Set" and deal a new one
                 moveFromSelectedToMatched(cards: selectedCards)
                 
                 for _ in 1...SetGameConstants.numberOfCardsInSet {
@@ -223,7 +218,7 @@ struct SetGame {
     }
 }
 
-// MARK: - Constants
+// MARK: - Extensions
 
 extension SetGame {
     struct SetGameConstants {
