@@ -77,7 +77,7 @@ class SetGameViewController: UIViewController {
         return discardSetCardsPileButton
     }()
     
-    private lazy var newGameButton: UIButton = {
+    private lazy var startGameButton: UIButton = {
         let button = UIButton()
         
         button.setTitle("Start Game", for: .normal)
@@ -188,7 +188,14 @@ class SetGameViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc private func startGame(_ sender: UIButton) {
+    @objc private func startGameButtonTapped(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.startGameButton.transform = CGAffineTransform(scaleX: -0.70, y: -0.70)
+            self.startGameButton.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+        }) { (_) in
+            self.startGameButton.transform = .identity
+        }
+        
         view.bringSubviewToFront(setCardStackView)
         setCardStackView.cardViews.forEach { $0.removeFromSuperview() }
         
@@ -210,7 +217,7 @@ class SetGameViewController: UIViewController {
         updateViewFromModel(for: .dealing)
     }
     
-    @objc private func showHint(_ sender: UIButton) {
+    @objc private func showHintButtonTapped(_ sender: UIButton) {
         if setCardStackView.cardViews.filter({ $0.state == .hinted }).isEmpty {
             game.addHint()
             updateViewFromModel(for: .highlighting)
@@ -234,11 +241,11 @@ class SetGameViewController: UIViewController {
     private func updateButtons() {
         // New Game
         if game.cardsOnTable.isEmpty {
-            newGameButton.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
-            newGameButton.setTitle("Start Game", for: .normal)
+            startGameButton.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
+            startGameButton.setTitle("Start Game", for: .normal)
         } else {
-            newGameButton.backgroundColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
-            newGameButton.setTitle("New Game", for: .normal)
+            startGameButton.backgroundColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
+            startGameButton.setTitle("New Game", for: .normal)
         }
         
         // Hint
@@ -261,7 +268,7 @@ class SetGameViewController: UIViewController {
             newSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         } else {
             newSetCardsPileButton.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            newSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+            newSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         }
         
         // Discarded Cards Pile
@@ -270,7 +277,7 @@ class SetGameViewController: UIViewController {
             discardSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         } else {
             discardSetCardsPileButton.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            discardSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 0.9372549057, green: 0.9372549057, blue: 0.9568627477, alpha: 1)
+            discardSetCardsPileButton.layer.backgroundColor = #colorLiteral(red: 0.7254902124, green: 0.4784313738, blue: 0.09803921729, alpha: 1)
         }
     }
     
@@ -378,9 +385,9 @@ class SetGameViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dealThreeCards))
         newSetCardsPileButton.addGestureRecognizer(tap)
         
-        newGameButton.addTarget(self, action: #selector(startGame(_:)), for: .touchUpInside)
+        startGameButton.addTarget(self, action: #selector(startGameButtonTapped(_:)), for: .touchUpInside)
         dealThreeCardsButton.addTarget(self, action: #selector(dealThreeCardsButtonTapped(_:)), for: .touchUpInside)
-        hintButton.addTarget(self, action: #selector(showHint(_:)), for: .touchUpInside)
+        hintButton.addTarget(self, action: #selector(showHintButtonTapped(_:)), for: .touchUpInside)
         
     }
     
@@ -414,7 +421,7 @@ class SetGameViewController: UIViewController {
         
         bottomStackView.addArrangedSubview(newSetCardsPileButton)
         bottomStackView.addArrangedSubview(discardSetCardsPileButton)
-        bottomStackView.addArrangedSubview(newGameButton)
+        bottomStackView.addArrangedSubview(startGameButton)
         bottomStackView.addArrangedSubview(dealThreeCardsButton)
         bottomStackView.addArrangedSubview(hintButton)
     }
