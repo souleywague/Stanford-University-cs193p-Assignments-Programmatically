@@ -11,13 +11,13 @@
 		7625EDD9223E3A1E00849309 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7625EDD8223E3A1E00849309 /* Assets.xcassets */; };
 		7625EDDC223E3A1E00849309 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7625EDDA223E3A1E00849309 /* LaunchScreen.storyboard */; };
 		7625EDE5223E3B4F00849309 /* Utilities & Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDE4223E3B4F00849309 /* Utilities & Extensions.swift */; };
-		7625EDEA223E414600849309 /* ImageGalleryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDE9223E414600849309 /* ImageGalleryTableViewController.swift */; };
-		7625EDEC223E416A00849309 /* ImageGalleryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDEB223E416A00849309 /* ImageGalleryCollectionViewController.swift */; };
-		7625EDEF223E420C00849309 /* ImageGalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDEE223E420C00849309 /* ImageGalleryViewController.swift */; };
-		7625EDF1223E422900849309 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDF0223E422900849309 /* ImageViewController.swift */; };
+		7625EDEF223E420C00849309 /* ImageGalleryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDEE223E420C00849309 /* ImageGalleryCollectionViewController.swift */; };
 		7625EDF3223E427500849309 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDF2223E427500849309 /* ImageView.swift */; };
 		7625EDF6223E519F00849309 /* ImagePropertiesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDF5223E519E00849309 /* ImagePropertiesModel.swift */; };
 		7625EDF9223E5C5600849309 /* ImageGalleryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDF8223E5C5600849309 /* ImageGalleryTableViewCell.swift */; };
+		76C6E75C223E96D500C5A3AF /* ImageGalleryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C6E75B223E96D500C5A3AF /* ImageGalleryTableViewController.swift */; };
+		76C6E75E223E975200C5A3AF /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C6E75D223E975200C5A3AF /* ImageViewController.swift */; };
+		76C6E760223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C6E75F223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,13 +27,13 @@
 		7625EDDB223E3A1E00849309 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7625EDDD223E3A1E00849309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7625EDE4223E3B4F00849309 /* Utilities & Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Utilities & Extensions.swift"; sourceTree = "<group>"; };
-		7625EDE9223E414600849309 /* ImageGalleryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryTableViewController.swift; sourceTree = "<group>"; };
-		7625EDEB223E416A00849309 /* ImageGalleryCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCollectionViewController.swift; sourceTree = "<group>"; };
-		7625EDEE223E420C00849309 /* ImageGalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryViewController.swift; sourceTree = "<group>"; };
-		7625EDF0223E422900849309 /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		7625EDEE223E420C00849309 /* ImageGalleryCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCollectionViewController.swift; sourceTree = "<group>"; };
 		7625EDF2223E427500849309 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		7625EDF5223E519E00849309 /* ImagePropertiesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePropertiesModel.swift; sourceTree = "<group>"; };
 		7625EDF8223E5C5600849309 /* ImageGalleryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryTableViewCell.swift; sourceTree = "<group>"; };
+		76C6E75B223E96D500C5A3AF /* ImageGalleryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryTableViewController.swift; sourceTree = "<group>"; };
+		76C6E75D223E975200C5A3AF /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
+		76C6E75F223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,10 +97,9 @@
 		7625EDED223E41B700849309 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				7625EDE9223E414600849309 /* ImageGalleryTableViewController.swift */,
-				7625EDEB223E416A00849309 /* ImageGalleryCollectionViewController.swift */,
-				7625EDEE223E420C00849309 /* ImageGalleryViewController.swift */,
-				7625EDF0223E422900849309 /* ImageViewController.swift */,
+				76C6E75B223E96D500C5A3AF /* ImageGalleryTableViewController.swift */,
+				7625EDEE223E420C00849309 /* ImageGalleryCollectionViewController.swift */,
+				76C6E75D223E975200C5A3AF /* ImageViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -110,6 +109,7 @@
 			children = (
 				7625EDF8223E5C5600849309 /* ImageGalleryTableViewCell.swift */,
 				7625EDF2223E427500849309 /* ImageView.swift */,
+				76C6E75F223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -193,14 +193,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7625EDE5223E3B4F00849309 /* Utilities & Extensions.swift in Sources */,
+				76C6E75E223E975200C5A3AF /* ImageViewController.swift in Sources */,
+				76C6E760223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift in Sources */,
+				76C6E75C223E96D500C5A3AF /* ImageGalleryTableViewController.swift in Sources */,
 				7625EDD2223E3A1900849309 /* AppDelegate.swift in Sources */,
-				7625EDEF223E420C00849309 /* ImageGalleryViewController.swift in Sources */,
-				7625EDEA223E414600849309 /* ImageGalleryTableViewController.swift in Sources */,
-				7625EDF1223E422900849309 /* ImageViewController.swift in Sources */,
+				7625EDEF223E420C00849309 /* ImageGalleryCollectionViewController.swift in Sources */,
 				7625EDF9223E5C5600849309 /* ImageGalleryTableViewCell.swift in Sources */,
 				7625EDF3223E427500849309 /* ImageView.swift in Sources */,
 				7625EDF6223E519F00849309 /* ImagePropertiesModel.swift in Sources */,
-				7625EDEC223E416A00849309 /* ImageGalleryCollectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
