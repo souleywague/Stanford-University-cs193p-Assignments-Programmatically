@@ -53,6 +53,10 @@ class ImageGalleryTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                            target: self,
+                                                            action: #selector(newDocument))
+        
         documents = Array(imageGalleryData.keys)
         
         setupTableView()
@@ -70,7 +74,7 @@ class ImageGalleryTableViewController: UIViewController {
     
     // MARK: - Actions
     
-    private func newDocument() {
+    @objc private func newDocument() {
         let newDocument = "Untitled".madeUnique(withRespectTo: Array(imageGalleryData.keys))
         documents += [newDocument]
         imageGalleryData[newDocument] = []
@@ -82,8 +86,8 @@ class ImageGalleryTableViewController: UIViewController {
     private func setupTableView() {
         imageGalleryTableView.delegate = self
         imageGalleryTableView.dataSource = self
-        imageGalleryTableView.register(UITableViewCell.self, forCellReuseIdentifier: documentCellID)
-        imageGalleryTableView.register(UITableViewCell.self, forCellReuseIdentifier: deletedCellID)
+        imageGalleryTableView.register(ImageGalleryTableViewCell.self, forCellReuseIdentifier: documentCellID)
+        imageGalleryTableView.register(ImageGalleryTableViewCell.self, forCellReuseIdentifier: deletedCellID)
     }
     
     private func setupLayout() {
