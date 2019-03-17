@@ -40,6 +40,14 @@ class ImageGalleryTableViewCell: UITableViewCell {
         return textField
     }()
     
+    lazy var title: UILabel = {
+        let title = UILabel()
+        
+        title.translatesAutoresizingMaskIntoConstraints = false
+        
+        return title
+    }()
+    
     private var previousTitle: String?
     
     // MARK: - Parent View Controllers
@@ -50,11 +58,19 @@ class ImageGalleryTableViewCell: UITableViewCell {
     
     private func setupLayout() {
         contentView.addSubview(cellView)
+        cellView.addSubview(textField)
+        cellView.addSubview(title)
         
         cellView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         cellView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         cellView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         cellView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
+        
+        textField.centerXAnchor.constraint(equalTo: cellView.centerXAnchor).isActive = true
+        textField.centerYAnchor.constraint(equalTo: cellView.centerYAnchor).isActive = true
+        
+        title.centerXAnchor.constraint(equalTo: cellView.centerXAnchor).isActive = true
+        title.centerYAnchor.constraint(equalTo: cellView.centerYAnchor).isActive = true
     }
     
 }
@@ -76,7 +92,7 @@ extension ImageGalleryTableViewCell {
         singleTapGesture.require(toFail: doubleTapGesture)
     }
     
-    @objc func singleTap(recognizer: UITapGestureRecognizer) {
+    @objc private func singleTap(recognizer: UITapGestureRecognizer) {
         disableAnyEnabledTextField()
         
         let indexPath = parentViewController.imageGalleryTableView.indexPath(for: self)
@@ -94,7 +110,7 @@ extension ImageGalleryTableViewCell {
         }
     }
     
-    @objc func doubleTap(recognizer: UITapGestureRecognizer) {
+    @objc private func doubleTap(recognizer: UITapGestureRecognizer) {
         textField.isEnabled = true
         textField.becomeFirstResponder()
     }
