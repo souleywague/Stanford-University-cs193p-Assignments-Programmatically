@@ -34,12 +34,12 @@ class SetCardBehavior: UIDynamicBehavior {
         let delay = setCardStackView.cardsToRemoveFromTable.isEmpty ? 0.0 :
             Delays.rearrange
         
-        // add rotation
+        // Add rotation
         setCardStackView.oldCardsToRearrange.forEach { setCardView in
             spin(setCardView, duration: Durations.rearrange * 6/3, delay: delay, direction: .counterclockwise)
         }
         
-        // rearrange cards
+        // Rearrange cards
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Durations.rearrange,
             delay: delay,
@@ -63,11 +63,11 @@ class SetCardBehavior: UIDynamicBehavior {
             var index = setCardStackView.oldCardsToRearrange.count
             
             for cardView in setCardStackView.newCardsToDeal {
-                // add rotation
+                // Add rotation
                 self.spin(cardView, duration: duration / 2, delay: delay, direction: .clockwise)
                 self.spin(cardView, duration: duration / 2, delay: delay + duration / 2, direction: .clockwise)
                 
-                // move and flip over
+                // Move and flip over
                 UIViewPropertyAnimator.runningPropertyAnimator(
                     withDuration: duration,
                     delay: delay,
@@ -148,14 +148,14 @@ class SetCardBehavior: UIDynamicBehavior {
     private func push(_ item: UIDynamicItem) {
         let push = UIPushBehavior(items: [item], mode: .instantaneous)
         
-        // calculating angle of pushing
+        // Calculating angle of pushing
         push.angle = CGFloat.pi.arc4random
         
-        // setting up a force
+        // Setting up a force
         let magnitude: CGFloat = UIDevice.current.userInterfaceIdiom == .phone ? 2 : 20
         push.magnitude = 1.0 + magnitude.arc4random
         
-        // applying push once then removing it from behavior
+        // Applying push once then removing it from behavior
         push.action = { [unowned push, weak self] in
             self?.removeChildBehavior(push)
         }
@@ -168,14 +168,14 @@ class SetCardBehavior: UIDynamicBehavior {
     func snapToDiscardedPile(_ setCardView: SetCardView) {
         collisionBehavior.removeItem(setCardView)
         
-        // move card to discard pile
+        // Move card to discard pile
         let discardedDeck = setCardView.cardStackView!.discardedCardsGoTo!
         let snap = UISnapBehavior(item: setCardView, snapTo: discardedDeck.center)
         snap.damping = 1.9
         addChildBehavior(snap)
         snapBehaviors[snap] = setCardView
         
-        // change cards size to discard pile's size
+        // Change cards size to discard pile's size
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Durations.snapMatched,
             delay: 0,
@@ -213,7 +213,7 @@ class SetCardBehavior: UIDynamicBehavior {
     }
 }
 
-// MARK: - Constants
+// MARK: - Extensions
 
 extension SetCardBehavior {
     private struct Durations {

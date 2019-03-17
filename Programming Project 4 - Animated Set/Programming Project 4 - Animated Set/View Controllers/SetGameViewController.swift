@@ -388,7 +388,6 @@ class SetGameViewController: UIViewController {
         startGameButton.addTarget(self, action: #selector(startGameButtonTapped(_:)), for: .touchUpInside)
         dealThreeCardsButton.addTarget(self, action: #selector(dealThreeCardsButtonTapped(_:)), for: .touchUpInside)
         hintButton.addTarget(self, action: #selector(showHintButtonTapped(_:)), for: .touchUpInside)
-        
     }
     
     private func setupLayout() {

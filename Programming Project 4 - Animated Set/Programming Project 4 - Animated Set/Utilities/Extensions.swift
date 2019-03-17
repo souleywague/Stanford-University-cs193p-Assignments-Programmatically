@@ -103,7 +103,7 @@ extension CGSize {
 // MARK: - Collection
 
 extension Collection {
-    // returns the one and only element of the Collection
+    // Returns the one and only element of the Collection
     var oneAndOnly: Element? {
         return count == 1 ? first : nil
     }
