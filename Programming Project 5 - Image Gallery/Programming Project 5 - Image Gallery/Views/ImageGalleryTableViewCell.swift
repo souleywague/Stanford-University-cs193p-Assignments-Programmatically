@@ -66,11 +66,15 @@ class ImageGalleryTableViewCell: UITableViewCell {
         cellView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         cellView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
         
-        textField.centerXAnchor.constraint(equalTo: cellView.centerXAnchor).isActive = true
-        textField.centerYAnchor.constraint(equalTo: cellView.centerYAnchor).isActive = true
+        textField.topAnchor.constraint(equalTo: cellView.topAnchor).isActive = true
+        textField.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 15).isActive = true
+        textField.trailingAnchor.constraint(equalTo: cellView.trailingAnchor).isActive = true
+        textField.bottomAnchor.constraint(equalTo: cellView.bottomAnchor).isActive = true
         
-        title.centerXAnchor.constraint(equalTo: cellView.centerXAnchor).isActive = true
-        title.centerYAnchor.constraint(equalTo: cellView.centerYAnchor).isActive = true
+        title.topAnchor.constraint(equalTo: cellView.topAnchor).isActive = true
+        title.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 15).isActive = true
+        title.trailingAnchor.constraint(equalTo: cellView.trailingAnchor).isActive = true
+        title.bottomAnchor.constraint(equalTo: cellView.bottomAnchor).isActive = true
     }
     
 }
@@ -147,7 +151,7 @@ extension ImageGalleryTableViewCell: UITextFieldDelegate {
         let imageCollection = parentViewController.imageGalleryData[previousTitle!]
         
         parentViewController.imageGalleryTableView.performBatchUpdates({
-            if reuseIdentifier == "deletedCellID" {
+            if reuseIdentifier == parentViewController.deletedCellID {
                 parentViewController.recentlyDeletedDocuments.remove(at: row)
                 parentViewController.recentlyDeletedDocuments.insert(newTitle, at: row)
             } else {

@@ -22,8 +22,8 @@ class ImageGalleryTableViewController: UIViewController {
     
     // MARK: - TableView Cell IDs
     
-    private let documentCellID = "documentCellID"
-    private let deletedCellID = "deletedCellID"
+    let documentCellID = "documentCellID"
+    let deletedCellID = "deletedCellID"
     
     // MARK: - Image Gallery Properties
     
@@ -58,8 +58,11 @@ class ImageGalleryTableViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                             target: self,
                                                             action: #selector(newDocument))
-        
         documents = Array(imageGalleryData.keys)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         setupTableView()
         setupLayout()
@@ -151,6 +154,10 @@ extension ImageGalleryTableViewController: UITableViewDelegate {
             return nil
         }
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44
+    }
 }
 
 // MARK: - TableView DataSource
@@ -196,9 +203,9 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0, documents.count > 0 {
-            return "Documents"
+            return "Galleries"
         } else if section == 1, recentlyDeletedDocuments.count > 0 {
-            return "Recently Deleted"
+            return "Recently Deleted Galleries"
         } else {
             return nil
         }

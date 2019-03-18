@@ -13,7 +13,9 @@ class ImageGalleryCollectionViewController: UIViewController {
     // MARK: - User Interface Properties
     
     private lazy var imageGalleryCollectionView: UICollectionView = {
-        let collectionView = UICollectionView()
+        let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: UICollectionViewLayout())
+        
+        collectionView.backgroundColor = .white
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -59,8 +61,15 @@ class ImageGalleryCollectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .white
+        
         navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
         navigationItem.leftItemsSupplementBackButton = true
+        navigationItem.rightBarButtonItem = trashButton
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         setupCollectionView()
         setupLayout()
@@ -87,7 +96,7 @@ class ImageGalleryCollectionViewController: UIViewController {
         imageGalleryCollectionView.register(ImageGalleryCollectionViewCell.self, forCellWithReuseIdentifier: imageCellID)
         imageGalleryCollectionView.register(ImageGalleryCollectionViewCell.self, forCellWithReuseIdentifier: dropPlaceholderCellID)
         
-        // TODO: Add Pinch Gesture
+        addPinchGesture()
     }
     
     private func setupLayout() {
@@ -102,6 +111,10 @@ class ImageGalleryCollectionViewController: UIViewController {
     }
 
 }
+
+// MARK: - UICollectionViewDelegate
+
+extension ImageGalleryCollectionViewController: UICollectionViewDelegate {}
 
 // MARK: - UICollectionViewDataSource
 
@@ -153,7 +166,7 @@ extension ImageGalleryCollectionViewController: UICollectionViewDataSource {
     }
 }
 
-// MARK: - UICollectionViewDelegateFloxLayout
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension ImageGalleryCollectionViewController: UICollectionViewDelegateFlowLayout {
     
@@ -249,7 +262,6 @@ extension ImageGalleryCollectionViewController: UICollectionViewDropDelegate {
     ///   - destinationIndexPath: The index path in the collection view at which the content would be dropped.
     ///   - coordinator: The coordinator object, obtained from performDropWith: UICollectionViewDropDelegate method.
     ///   - collectionView: The collection view in which moving needs to be done.
-    
     private func moveItem(_ item: UICollectionViewDropItem, from sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath, withCoordinator coordinator: UICollectionViewDropCoordinator, inCollectionView collectionView: UICollectionView) {
         
         if let imageURL = item.dragItem.localObject as? URL {
@@ -273,14 +285,13 @@ extension ImageGalleryCollectionViewController: UICollectionViewDropDelegate {
     ///   - destinationIndexPath: The index path in the collection view at which the content would be dropped.
     ///   - coordinator: The coordinator object, obtained from performDropWith: UICollectionViewDropDelegate method.
     ///   - collectionView: The collection view in which inserting needs to be done.
-    
     private func insertItem(_ item: UICollectionViewDropItem, at destinationIndexPath: IndexPath, withCoordinator coordinator: UICollectionViewDropCoordinator, inCollectionView collectionView: UICollectionView) {
         
         // Instantly putting a placeholder, because the may take time
         let placeholderContext = coordinator.drop(item.dragItem,
                                                   to: UICollectionViewDropPlaceholder(insertionIndexPath: destinationIndexPath, reuseIdentifier: dropPlaceholderCellID))
         
-        // Creating a dispatch group to start tasks concurrentlu and then get notified when they's finished
+        // Creating a dispatch group to start tasks concurrently and then get notified when they's finished
         let imagePropertiesGroup = DispatchGroup()
         
         // Getting image URL from the dropping item

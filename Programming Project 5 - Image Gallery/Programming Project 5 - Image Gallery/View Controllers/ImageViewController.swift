@@ -91,7 +91,7 @@ class ImageViewController: UIViewController {
     
 }
 
-// MARK: UIScrollViewDelegate
+// MARK: - UIScrollViewDelegate
 
 extension ImageViewController: UIScrollViewDelegate {
     

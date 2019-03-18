@@ -1,5 +1,5 @@
 //
-//  ImagePropertiesModel.swift
+//  ImageProperties.swift
 //  Programming Project 5 - Image Gallery
 //
 //  Created by Souley on 17/03/2019.

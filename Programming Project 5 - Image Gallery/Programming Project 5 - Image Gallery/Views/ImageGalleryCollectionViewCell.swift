@@ -24,6 +24,14 @@ class ImageGalleryCollectionViewCell: UICollectionViewCell {
         
     // MARK: - Cell View Properties
     
+    private lazy var cellView: UIView = {
+        let cellView = UIView()
+        
+        cellView.translatesAutoresizingMaskIntoConstraints = false
+        
+        return cellView
+    }()
+    
     lazy var label: UILabel = {
         let label = UILabel()
         
@@ -53,14 +61,20 @@ class ImageGalleryCollectionViewCell: UICollectionViewCell {
     // MARK: - Setup Functions
     
     private func setupLayout() {
-        contentView.addSubview(label)
-        contentView.addSubview(spinner)
+        contentView.addSubview(cellView)
+        cellView.addSubview(label)
+        cellView.addSubview(spinner)
         
-        label.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-        label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        cellView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        cellView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        cellView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        cellView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
         
-        spinner.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
-        spinner.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        label.centerXAnchor.constraint(equalTo: cellView.centerXAnchor).isActive = true
+        label.centerYAnchor.constraint(equalTo: cellView.centerYAnchor).isActive = true
+        
+        spinner.centerXAnchor.constraint(equalTo: cellView.centerXAnchor).isActive = true
+        spinner.centerYAnchor.constraint(equalTo: cellView.centerYAnchor).isActive = true
     }
 }
 
