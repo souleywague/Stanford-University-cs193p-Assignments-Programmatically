@@ -26,7 +26,11 @@ class ImageFetcher
     //   otherwise the result of the fetch will be discarded and the handler never called.
     // In other words, keeping a strong pointer to your instance says "I'm still interested in its result."
     
-    var backup: UIImage? { didSet { callHandlerIfNeeded() } }
+    var backup: UIImage? {
+        didSet {
+            callHandlerIfNeeded()
+        }
+    }
     
     func fetch(_ url: URL) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -59,7 +63,12 @@ class ImageFetcher
     // Private Implementation
     
     private let handler: (URL, UIImage) -> Void
-    private var fetchFailed = false { didSet { callHandlerIfNeeded() } }
+    
+    private var fetchFailed = false {
+        didSet { callHandlerIfNeeded()
+        }
+    }
+    
     private func callHandlerIfNeeded() {
         if fetchFailed, let image = backup, let url = image.storeLocallyAsJPEG(named: String(Date().timeIntervalSinceReferenceDate)) {
             handler(url, image)
@@ -87,8 +96,7 @@ extension URL {
     }
 }
 
-extension UIImage
-{
+extension UIImage {
     private static let localImagesDirectory = "UIImage.storeLocallyAsJPEG"
     
     static func urlToStoreLocallyAsJPEG(named: String) -> URL? {

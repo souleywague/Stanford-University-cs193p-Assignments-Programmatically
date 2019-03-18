@@ -53,6 +53,8 @@ class ImageGalleryTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .white
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                             target: self,
                                                             action: #selector(newDocument))
@@ -86,6 +88,7 @@ class ImageGalleryTableViewController: UIViewController {
     private func setupTableView() {
         imageGalleryTableView.delegate = self
         imageGalleryTableView.dataSource = self
+        
         imageGalleryTableView.register(ImageGalleryTableViewCell.self, forCellReuseIdentifier: documentCellID)
         imageGalleryTableView.register(ImageGalleryTableViewCell.self, forCellReuseIdentifier: deletedCellID)
     }
@@ -138,7 +141,7 @@ extension ImageGalleryTableViewController: UITableViewDelegate {
                     tableView.reloadData()
                 })
             }
-            swipeAction.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
+            swipeAction.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
             
             let swipeConfiguration = UISwipeActionsConfiguration(actions: [swipeAction])
             swipeConfiguration.performsFirstActionWithFullSwipe = true
@@ -173,6 +176,7 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
         if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: deletedCellID, for: indexPath) as! ImageGalleryTableViewCell
             
+            cell.accessoryType = .detailDisclosureButton
             cell.textField.text = recentlyDeletedDocuments[indexPath.row]
             cell.parentViewController = self
             cell.addTapGestures()
@@ -181,6 +185,7 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: documentCellID, for: indexPath) as! ImageGalleryTableViewCell
             
+            cell.accessoryType = .detailDisclosureButton
             cell.textField.text = documents[indexPath.row]
             cell.parentViewController = self
             cell.addTapGestures()
