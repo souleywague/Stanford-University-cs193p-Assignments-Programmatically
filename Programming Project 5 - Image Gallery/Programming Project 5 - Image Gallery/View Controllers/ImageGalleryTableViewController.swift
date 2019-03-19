@@ -48,6 +48,10 @@ class ImageGalleryTableViewController: UIViewController {
     var galleries: [String] = []
     var recentlyDeletedGalleries: [String] = []
     
+    // MARK: Delegates
+    
+    weak var galleryChooserDelegate: GalleryChooserDelegate?
+    
     // MARK: - View Controller Life Cycle
     
     override func viewDidLoad() {
@@ -59,6 +63,7 @@ class ImageGalleryTableViewController: UIViewController {
                                                             target: self,
                                                             action: #selector(newGallery))
         galleries = Array(imageGalleryData.keys)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -68,12 +73,6 @@ class ImageGalleryTableViewController: UIViewController {
         setupLayout()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        registerForKeyboardNotifications()
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -81,6 +80,18 @@ class ImageGalleryTableViewController: UIViewController {
             splitViewController?.preferredDisplayMode != .primaryOverlay {
             splitViewController?.preferredDisplayMode = .primaryOverlay
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        registerForKeyboardNotifications()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        removeKeyboardNotifications()
     }
     
     // MARK: - Actions
@@ -114,7 +125,6 @@ class ImageGalleryTableViewController: UIViewController {
     }
     
 }
-
 
 // MARK: - TableView Delegate
 
@@ -245,6 +255,19 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - GalleryChooserDelegate
+
+extension ImageGalleryTableViewController: CellChooserDelegate {
+    func didChooseCell(sender: ImageGalleryTableViewCell) {
+        
+        let currentGallery = sender.textField.text!
+        
+        galleryChooserDelegate?.didChooseGallery(currentGallery: currentGallery, imageDataStorage: imageGalleryData[currentGallery]!)
+        splitViewController?.toggleMasterView()
+    }
+    
+}
+
 // MARK: - Notifications
 
 extension ImageGalleryTableViewController {
@@ -252,6 +275,11 @@ extension ImageGalleryTableViewController {
     private func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    private func removeKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidShowNotification, object: self)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidHideNotification, object: self)
     }
     
     @objc private func keyboardWasShown(_ notification: NSNotification) {

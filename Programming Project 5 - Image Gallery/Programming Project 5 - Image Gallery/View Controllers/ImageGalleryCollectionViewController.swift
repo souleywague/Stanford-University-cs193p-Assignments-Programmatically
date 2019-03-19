@@ -408,3 +408,12 @@ extension ImageGalleryCollectionViewController {
         }
     }
 }
+
+// MARK: - GalleryChooserDelegate
+
+extension ImageGalleryCollectionViewController: GalleryChooserDelegate {
+    func didChooseGallery(currentGallery: String, imageDataStorage: [ImageProperties]) {
+        self.currentGallery = currentGallery
+        self.imageDataStorage = imageDataStorage
+    }
+}

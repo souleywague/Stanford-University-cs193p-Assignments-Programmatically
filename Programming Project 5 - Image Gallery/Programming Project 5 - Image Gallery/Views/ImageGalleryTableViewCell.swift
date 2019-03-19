@@ -50,9 +50,11 @@ class ImageGalleryTableViewCell: UITableViewCell {
     
     private var previousTitle: String?
     
-    // MARK: - Parent View Controllers
+    // MARK: - Parent View Controller and Delegates
     
     weak var parentViewController: ImageGalleryTableViewController!
+    
+    weak var delegate: CellChooserDelegate?
     
     // MARK: - Setup Functions
     
@@ -100,9 +102,10 @@ extension ImageGalleryTableViewCell {
         disableAnyEnabledTextField()
         
         let indexPath = parentViewController.imageGalleryTableView.indexPath(for: self)
+        
         parentViewController.imageGalleryTableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
         
-        // TODO: Show image collection
+        delegate?.didChooseCell(sender: self)
     }
     
     private func disableAnyEnabledTextField() {
