@@ -151,12 +151,12 @@ extension ImageGalleryTableViewCell: UITextFieldDelegate {
         let imageCollection = parentViewController.imageGalleryData[previousTitle!]
         
         parentViewController.imageGalleryTableView.performBatchUpdates({
-            if reuseIdentifier == parentViewController.deletedCellID {
-                parentViewController.recentlyDeletedDocuments.remove(at: row)
-                parentViewController.recentlyDeletedDocuments.insert(newTitle, at: row)
+            if reuseIdentifier == parentViewController.deletedGalleryCellID {
+                parentViewController.recentlyDeletedGalleries.remove(at: row)
+                parentViewController.recentlyDeletedGalleries.insert(newTitle, at: row)
             } else {
-                parentViewController.documents.remove(at: row)
-                parentViewController.documents.insert(newTitle, at: row)
+                parentViewController.galleries.remove(at: row)
+                parentViewController.galleries.insert(newTitle, at: row)
             }
             parentViewController.imageGalleryData.removeValue(forKey: previousTitle!)
             parentViewController.imageGalleryData[newTitle] = imageCollection

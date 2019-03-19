@@ -22,8 +22,8 @@ class ImageGalleryTableViewController: UIViewController {
     
     // MARK: - TableView Cell IDs
     
-    let documentCellID = "documentCellID"
-    let deletedCellID = "deletedCellID"
+    let galleryCellID = "galleryCellID"
+    let deletedGalleryCellID = "deletedGalleryCellID"
     
     // MARK: - Image Gallery Properties
     
@@ -45,8 +45,8 @@ class ImageGalleryTableViewController: UIViewController {
         }
     }
     
-    var documents: [String] = []
-    var recentlyDeletedDocuments: [String] = []
+    var galleries: [String] = []
+    var recentlyDeletedGalleries: [String] = []
     
     // MARK: - View Controller Life Cycle
     
@@ -57,8 +57,8 @@ class ImageGalleryTableViewController: UIViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                             target: self,
-                                                            action: #selector(newDocument))
-        documents = Array(imageGalleryData.keys)
+                                                            action: #selector(newGallery))
+        galleries = Array(imageGalleryData.keys)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -66,6 +66,12 @@ class ImageGalleryTableViewController: UIViewController {
         
         setupTableView()
         setupLayout()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        registerForKeyboardNotifications()
     }
     
     override func viewDidLayoutSubviews() {
@@ -79,10 +85,10 @@ class ImageGalleryTableViewController: UIViewController {
     
     // MARK: - Actions
     
-    @objc private func newDocument() {
-        let newDocument = "Untitled".madeUnique(withRespectTo: Array(imageGalleryData.keys))
-        documents += [newDocument]
-        imageGalleryData[newDocument] = []
+    @objc private func newGallery() {
+        let newGallery = "Untitled".madeUnique(withRespectTo: Array(imageGalleryData.keys))
+        galleries += [newGallery]
+        imageGalleryData[newGallery] = []
         imageGalleryTableView.reloadData()
     }
     
@@ -92,8 +98,8 @@ class ImageGalleryTableViewController: UIViewController {
         imageGalleryTableView.delegate = self
         imageGalleryTableView.dataSource = self
         
-        imageGalleryTableView.register(ImageGalleryTableViewCell.self, forCellReuseIdentifier: documentCellID)
-        imageGalleryTableView.register(ImageGalleryTableViewCell.self, forCellReuseIdentifier: deletedCellID)
+        imageGalleryTableView.register(ImageGalleryTableViewCell.self, forCellReuseIdentifier: galleryCellID)
+        imageGalleryTableView.register(ImageGalleryTableViewCell.self, forCellReuseIdentifier: deletedGalleryCellID)
     }
     
     private func setupLayout() {
@@ -117,7 +123,7 @@ extension ImageGalleryTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         let cell = tableView.cellForRow(at: indexPath) as! ImageGalleryTableViewCell
         
-        if cell.reuseIdentifier == deletedCellID {
+        if cell.reuseIdentifier == deletedGalleryCellID {
             return nil
         } else {
             return indexPath
@@ -128,15 +134,15 @@ extension ImageGalleryTableViewController: UITableViewDelegate {
         let cell = tableView.cellForRow(at: indexPath) as! ImageGalleryTableViewCell
         
         switch cell.reuseIdentifier {
-        case deletedCellID:
+        case deletedGalleryCellID:
             let swipeAction = UIContextualAction(style: .normal, title: "Recover") { (action, sourceView, actionPerfomed) in
                 
                 let deletedDocument = cell.textField.text!
-                let newIndexPath = IndexPath(row: self.documents.count, section: 0)
+                let newIndexPath = IndexPath(row: self.galleries.count, section: 0)
                 
                 tableView.performBatchUpdates({
-                    self.recentlyDeletedDocuments.remove(at: indexPath.row)
-                    self.documents += [deletedDocument]
+                    self.recentlyDeletedGalleries.remove(at: indexPath.row)
+                    self.galleries += [deletedDocument]
                     
                     tableView.deleteRows(at: [indexPath], with: .fade)
                     tableView.insertRows(at: [newIndexPath], with: .fade)
@@ -171,9 +177,9 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return documents.count
+            return galleries.count
         case 1:
-            return recentlyDeletedDocuments.count
+            return recentlyDeletedGalleries.count
         default:
             return 0
         }
@@ -181,19 +187,19 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: deletedCellID, for: indexPath) as! ImageGalleryTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: deletedGalleryCellID, for: indexPath) as! ImageGalleryTableViewCell
             
             cell.accessoryType = .detailDisclosureButton
-            cell.textField.text = recentlyDeletedDocuments[indexPath.row]
+            cell.textField.text = recentlyDeletedGalleries[indexPath.row]
             cell.parentViewController = self
             cell.addTapGestures()
             
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: documentCellID, for: indexPath) as! ImageGalleryTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: galleryCellID, for: indexPath) as! ImageGalleryTableViewCell
             
             cell.accessoryType = .detailDisclosureButton
-            cell.textField.text = documents[indexPath.row]
+            cell.textField.text = galleries[indexPath.row]
             cell.parentViewController = self
             cell.addTapGestures()
             
@@ -202,9 +208,9 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0, documents.count > 0 {
+        if section == 0, galleries.count > 0 {
             return "Galleries"
-        } else if section == 1, recentlyDeletedDocuments.count > 0 {
+        } else if section == 1, recentlyDeletedGalleries.count > 0 {
             return "Recently Deleted Galleries"
         } else {
             return nil
@@ -216,20 +222,20 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
         
         if editingStyle == .delete {
             switch cell.reuseIdentifier {
-            case documentCellID:
+            case galleryCellID:
                 let deletedDocument = cell.textField.text!
-                let newIndexPath = IndexPath(row: recentlyDeletedDocuments.count, section: 1)
+                let newIndexPath = IndexPath(row: recentlyDeletedGalleries.count, section: 1)
                 
                 tableView.performBatchUpdates({
-                    documents.remove(at: indexPath.row)
-                    recentlyDeletedDocuments += [deletedDocument]
+                    galleries.remove(at: indexPath.row)
+                    recentlyDeletedGalleries += [deletedDocument]
                     
                     tableView.deleteRows(at: [indexPath], with: .fade)
                     tableView.insertRows(at: [newIndexPath], with: .fade)
                 })
-            case deletedCellID:
+            case deletedGalleryCellID:
                 let deletedDocument = cell.textField.text!
-                recentlyDeletedDocuments.remove(at: indexPath.row)
+                recentlyDeletedGalleries.remove(at: indexPath.row)
                 imageGalleryData[deletedDocument] = nil
                 tableView.deleteRows(at: [indexPath], with: .fade)
             default:
@@ -238,3 +244,32 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
         }
     }
 }
+
+// MARK: - Notifications
+
+extension ImageGalleryTableViewController {
+    
+    private func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+    }
+    
+    @objc private func keyboardWasShown(_ notification: NSNotification) {
+        guard let info = notification.userInfo, let keyboardFrameValue = info[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue else { return }
+        
+        let keyboardFrame = keyboardFrameValue.cgRectValue
+        let keyboardSize = keyboardFrame.size
+        
+        let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize.height, right: 0.0)
+        
+        imageGalleryTableView.contentInset = contentInsets
+        imageGalleryTableView.scrollIndicatorInsets = contentInsets
+    }
+    
+    @objc private func keyboardWillBeHidden(_ notification: NSNotification) {
+        let contentInsets = UIEdgeInsets.zero
+        imageGalleryTableView.contentInset = contentInsets
+        imageGalleryTableView.scrollIndicatorInsets = contentInsets
+    }
+}
+

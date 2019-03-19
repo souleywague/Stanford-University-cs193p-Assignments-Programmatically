@@ -13,9 +13,12 @@ class ImageGalleryCollectionViewController: UIViewController {
     // MARK: - User Interface Properties
     
     private lazy var imageGalleryCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: UICollectionViewLayout())
+        let collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: UICollectionViewFlowLayout())
         
         collectionView.backgroundColor = .white
+        
+        collectionView.isScrollEnabled = true
+        collectionView.dragInteractionEnabled = true
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -32,16 +35,16 @@ class ImageGalleryCollectionViewController: UIViewController {
     
     weak var imageGalleryTableViewController: ImageGalleryTableViewController?
     
-    var currentDocument: String? {
+    var currentGallery: String? {
         didSet {
-            title = currentDocument ?? nil
+            title = currentGallery ?? nil
         }
     }
     
     var imageDataStorage: [ImageProperties] = [] {
         didSet {
-            if currentDocument != nil {
-                imageGalleryTableViewController?.imageGalleryData[currentDocument!] = imageDataStorage
+            if currentGallery != nil {
+                imageGalleryTableViewController?.imageGalleryData[currentGallery!] = imageDataStorage
             }
         }
     }
@@ -222,7 +225,7 @@ extension ImageGalleryCollectionViewController: UICollectionViewDragDelegate {
 extension ImageGalleryCollectionViewController: UICollectionViewDropDelegate {
     
     func collectionView(_ collectionView: UICollectionView, canHandle session: UIDropSession) -> Bool {
-        guard currentDocument != nil else { return false }
+        guard currentGallery != nil else { return false }
         
         let isSelf = (session.localDragSession?.localContext as? UICollectionView) == collectionView
         
