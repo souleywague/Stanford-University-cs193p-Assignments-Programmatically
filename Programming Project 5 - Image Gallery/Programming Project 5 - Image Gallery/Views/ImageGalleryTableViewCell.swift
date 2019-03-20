@@ -35,6 +35,8 @@ class ImageGalleryTableViewCell: UITableViewCell {
     lazy var textField: UITextField = {
         let textField = UITextField()
         
+        textField.isEnabled = false
+        
         textField.translatesAutoresizingMaskIntoConstraints = false
         
         return textField
@@ -54,7 +56,9 @@ class ImageGalleryTableViewCell: UITableViewCell {
     
     weak var parentViewController: ImageGalleryTableViewController!
     
-    weak var delegate: CellChooserDelegate?
+    // MARK: - Delegates
+    
+    weak var delegate: CellSelectionDelegate?
     
     // MARK: - Setup Functions
     
@@ -62,7 +66,7 @@ class ImageGalleryTableViewCell: UITableViewCell {
         contentView.addSubview(cellView)
         cellView.addSubview(textField)
         cellView.addSubview(title)
-        
+
         cellView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         cellView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         cellView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
@@ -95,6 +99,7 @@ extension ImageGalleryTableViewCell {
         
         doubleTapGesture.numberOfTapsRequired = 2
         addGestureRecognizer(doubleTapGesture)
+        
         singleTapGesture.require(toFail: doubleTapGesture)
     }
     
@@ -104,8 +109,6 @@ extension ImageGalleryTableViewCell {
         let indexPath = parentViewController.imageGalleryTableView.indexPath(for: self)
         
         parentViewController.imageGalleryTableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
-        
-        delegate?.didChooseCell(sender: self)
     }
     
     private func disableAnyEnabledTextField() {

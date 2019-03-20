@@ -69,6 +69,8 @@ class ImageGalleryCollectionViewController: UIViewController {
         navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
         navigationItem.leftItemsSupplementBackButton = true
         navigationItem.rightBarButtonItem = trashButton
+        
+        navigationController?.title = currentGallery
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -409,11 +411,3 @@ extension ImageGalleryCollectionViewController {
     }
 }
 
-// MARK: - GalleryChooserDelegate
-
-extension ImageGalleryCollectionViewController: GalleryChooserDelegate {
-    func didChooseGallery(currentGallery: String, imageDataStorage: [ImageProperties]) {
-        self.currentGallery = currentGallery
-        self.imageDataStorage = imageDataStorage
-    }
-}

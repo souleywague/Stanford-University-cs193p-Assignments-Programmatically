@@ -1,5 +1,5 @@
 //
-//  GalleryChooserDelegate.swift
+//  CellSelectionDelegate.swift
 //  Programming Project 5 - Image Gallery
 //
 //  Created by Souley on 20/03/2019.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-protocol didChooseGallery {
+protocol didSelectCell {
     
 }

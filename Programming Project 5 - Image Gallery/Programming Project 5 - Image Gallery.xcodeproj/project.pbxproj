@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		761FA3EC2240E5340045956E /* CellChooserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761FA3EB2240E5340045956E /* CellChooserDelegate.swift */; };
-		761FA3EF2240F0C60045956E /* GalleryChooserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761FA3EE2240F0C60045956E /* GalleryChooserDelegate.swift */; };
 		7625EDD2223E3A1900849309 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDD1223E3A1900849309 /* AppDelegate.swift */; };
 		7625EDD9223E3A1E00849309 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7625EDD8223E3A1E00849309 /* Assets.xcassets */; };
 		7625EDDC223E3A1E00849309 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7625EDDA223E3A1E00849309 /* LaunchScreen.storyboard */; };
@@ -17,14 +15,14 @@
 		7625EDF3223E427500849309 /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDF2223E427500849309 /* ImageView.swift */; };
 		7625EDF6223E519F00849309 /* ImageProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDF5223E519E00849309 /* ImageProperties.swift */; };
 		7625EDF9223E5C5600849309 /* ImageGalleryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDF8223E5C5600849309 /* ImageGalleryTableViewCell.swift */; };
+		76C3A0EE2242568B002C2A55 /* CellSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C3A0ED2242568B002C2A55 /* CellSelectionDelegate.swift */; };
+		76C3A0F0224256AC002C2A55 /* GalleryChooserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C3A0EF224256AC002C2A55 /* GalleryChooserDelegate.swift */; };
 		76C6E75C223E96D500C5A3AF /* ImageGalleryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C6E75B223E96D500C5A3AF /* ImageGalleryTableViewController.swift */; };
 		76C6E75E223E975200C5A3AF /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C6E75D223E975200C5A3AF /* ImageViewController.swift */; };
 		76C6E760223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76C6E75F223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		761FA3EB2240E5340045956E /* CellChooserDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellChooserDelegate.swift; sourceTree = "<group>"; };
-		761FA3EE2240F0C60045956E /* GalleryChooserDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryChooserDelegate.swift; sourceTree = "<group>"; };
 		7625EDCE223E3A1900849309 /* Programming Project 5 - Image Gallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Programming Project 5 - Image Gallery.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7625EDD1223E3A1900849309 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7625EDD8223E3A1E00849309 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -35,6 +33,8 @@
 		7625EDF2223E427500849309 /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		7625EDF5223E519E00849309 /* ImageProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProperties.swift; sourceTree = "<group>"; };
 		7625EDF8223E5C5600849309 /* ImageGalleryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryTableViewCell.swift; sourceTree = "<group>"; };
+		76C3A0ED2242568B002C2A55 /* CellSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellSelectionDelegate.swift; sourceTree = "<group>"; };
+		76C3A0EF224256AC002C2A55 /* GalleryChooserDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryChooserDelegate.swift; sourceTree = "<group>"; };
 		76C6E75B223E96D500C5A3AF /* ImageGalleryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryTableViewController.swift; sourceTree = "<group>"; };
 		76C6E75D223E975200C5A3AF /* ImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		76C6E75F223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -54,8 +54,8 @@
 		761FA3ED2240E54B0045956E /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				761FA3EB2240E5340045956E /* CellChooserDelegate.swift */,
-				761FA3EE2240F0C60045956E /* GalleryChooserDelegate.swift */,
+				76C3A0ED2242568B002C2A55 /* CellSelectionDelegate.swift */,
+				76C3A0EF224256AC002C2A55 /* GalleryChooserDelegate.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -209,14 +209,14 @@
 				7625EDE5223E3B4F00849309 /* Utilities & Extensions.swift in Sources */,
 				76C6E75E223E975200C5A3AF /* ImageViewController.swift in Sources */,
 				76C6E760223E9BA100C5A3AF /* ImageGalleryCollectionViewCell.swift in Sources */,
+				76C3A0EE2242568B002C2A55 /* CellSelectionDelegate.swift in Sources */,
+				76C3A0F0224256AC002C2A55 /* GalleryChooserDelegate.swift in Sources */,
 				76C6E75C223E96D500C5A3AF /* ImageGalleryTableViewController.swift in Sources */,
 				7625EDD2223E3A1900849309 /* AppDelegate.swift in Sources */,
 				7625EDEF223E420C00849309 /* ImageGalleryCollectionViewController.swift in Sources */,
-				761FA3EF2240F0C60045956E /* GalleryChooserDelegate.swift in Sources */,
 				7625EDF9223E5C5600849309 /* ImageGalleryTableViewCell.swift in Sources */,
 				7625EDF3223E427500849309 /* ImageView.swift in Sources */,
 				7625EDF6223E519F00849309 /* ImageProperties.swift in Sources */,
-				761FA3EC2240E5340045956E /* CellChooserDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

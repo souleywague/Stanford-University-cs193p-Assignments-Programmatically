@@ -48,10 +48,6 @@ class ImageGalleryTableViewController: UIViewController {
     var galleries: [String] = []
     var recentlyDeletedGalleries: [String] = []
     
-    // MARK: Delegates
-    
-    weak var galleryChooserDelegate: GalleryChooserDelegate?
-    
     // MARK: - View Controller Life Cycle
     
     override func viewDidLoad() {
@@ -62,8 +58,8 @@ class ImageGalleryTableViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                             target: self,
                                                             action: #selector(newGallery))
-        galleries = Array(imageGalleryData.keys)
         
+        galleries = Array(imageGalleryData.keys)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,15 +67,6 @@ class ImageGalleryTableViewController: UIViewController {
         
         setupTableView()
         setupLayout()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        if (UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight),
-            splitViewController?.preferredDisplayMode != .primaryOverlay {
-            splitViewController?.preferredDisplayMode = .primaryOverlay
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -98,6 +85,7 @@ class ImageGalleryTableViewController: UIViewController {
     
     @objc private func newGallery() {
         let newGallery = "Untitled".madeUnique(withRespectTo: Array(imageGalleryData.keys))
+        
         galleries += [newGallery]
         imageGalleryData[newGallery] = []
         imageGalleryTableView.reloadData()
@@ -160,7 +148,7 @@ extension ImageGalleryTableViewController: UITableViewDelegate {
                     tableView.reloadData()
                 })
             }
-            swipeAction.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
+            swipeAction.backgroundColor = #colorLiteral(red: 0.2590922713, green: 0.7981814742, blue: 0.2638709843, alpha: 1)
             
             let swipeConfiguration = UISwipeActionsConfiguration(actions: [swipeAction])
             swipeConfiguration.performsFirstActionWithFullSwipe = true
@@ -253,19 +241,6 @@ extension ImageGalleryTableViewController: UITableViewDataSource {
             }
         }
     }
-}
-
-// MARK: - GalleryChooserDelegate
-
-extension ImageGalleryTableViewController: CellChooserDelegate {
-    func didChooseCell(sender: ImageGalleryTableViewCell) {
-        
-        let currentGallery = sender.textField.text!
-        
-        galleryChooserDelegate?.didChooseGallery(currentGallery: currentGallery, imageDataStorage: imageGalleryData[currentGallery]!)
-        splitViewController?.toggleMasterView()
-    }
-    
 }
 
 // MARK: - Notifications
