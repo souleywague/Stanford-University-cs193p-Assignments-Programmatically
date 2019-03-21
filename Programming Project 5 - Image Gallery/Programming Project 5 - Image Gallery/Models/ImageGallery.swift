@@ -33,7 +33,7 @@ struct ImageGallery: Hashable, Codable {
         /// The fetched image's data.
         var imageData: Data?
         
-        /// MARK: Initializer
+        // MARK: - Initializer
         
         init(imagePath: URL?, aspectRatio: Double) {
             self.imagePath = imagePath

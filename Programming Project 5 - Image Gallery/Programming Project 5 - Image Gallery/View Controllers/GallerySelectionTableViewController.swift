@@ -53,16 +53,16 @@ class GallerySelectionTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
-                                                            target: self,
-                                                            action: #selector(addButtonTapped(_:)))
-        
         setupTableView()
         setupLayout()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                            target: self,
+                                                            action: #selector(addButtonTapped(_:)))
         
         if let selectedGallery = detailController?.gallery {
             if let index = galleriesStore?.galleries.firstIndex(of: selectedGallery) {
@@ -195,7 +195,7 @@ extension GallerySelectionTableViewController: UITableViewDataSource {
     
 }
 
-// MARK: - TableViewDelagate
+// MARK: - TableViewDelegate
 
 extension GallerySelectionTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
