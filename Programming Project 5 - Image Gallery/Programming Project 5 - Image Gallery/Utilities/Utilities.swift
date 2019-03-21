@@ -4,6 +4,7 @@
 //  Created by CS193p Instructor.
 //  Copyright © 2017 Stanford University. All rights reserved.
 //
+
 import UIKit
 
 class ImageFetcher
@@ -26,11 +27,7 @@ class ImageFetcher
     //   otherwise the result of the fetch will be discarded and the handler never called.
     // In other words, keeping a strong pointer to your instance says "I'm still interested in its result."
     
-    var backup: UIImage? {
-        didSet {
-            callHandlerIfNeeded()
-        }
-    }
+    var backup: UIImage? { didSet { callHandlerIfNeeded() } }
     
     func fetch(_ url: URL) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -63,12 +60,7 @@ class ImageFetcher
     // Private Implementation
     
     private let handler: (URL, UIImage) -> Void
-    
-    private var fetchFailed = false {
-        didSet { callHandlerIfNeeded()
-        }
-    }
-    
+    private var fetchFailed = false { didSet { callHandlerIfNeeded() } }
     private func callHandlerIfNeeded() {
         if fetchFailed, let image = backup, let url = image.storeLocallyAsJPEG(named: String(Date().timeIntervalSinceReferenceDate)) {
             handler(url, image)
@@ -96,7 +88,8 @@ extension URL {
     }
 }
 
-extension UIImage {
+extension UIImage
+{
     private static let localImagesDirectory = "UIImage.storeLocallyAsJPEG"
     
     static func urlToStoreLocallyAsJPEG(named: String) -> URL? {
@@ -128,8 +121,7 @@ extension UIImage {
     func storeLocallyAsJPEG(named name: String) -> URL? {
         let image = UIImage()
         if let imageData = image.jpegData(compressionQuality: 1.0) {
-            if let url = UIImage.urlToStoreLocallyAsJPEG(named: name
-                ) {
+            if let url = UIImage.urlToStoreLocallyAsJPEG(named: name) {
                 do {
                     try imageData.write(to: url)
                     return url
@@ -140,6 +132,18 @@ extension UIImage {
         }
         return nil
     }
+    
+    /// Returns the aspect ratio of the passed UIImage.
+    var aspectRatio: Double {
+        if let cgImage = cgImage {
+            let imageHeight = Double(cgImage.height)
+            let imageWidth = Double(cgImage.width)
+            
+            return Double(imageWidth / imageHeight)
+        } else {
+            return 1
+        }
+    }
 }
 
 extension String {
@@ -147,7 +151,7 @@ extension String {
         var possiblyUnique = self
         var uniqueNumber = 1
         while otherStrings.contains(possiblyUnique) {
-            possiblyUnique = self + " (\(uniqueNumber))"
+            possiblyUnique = self + " \(uniqueNumber)"
             uniqueNumber += 1
         }
         return possiblyUnique
@@ -221,14 +225,5 @@ extension UIView {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image
-    }
-}
-
-extension UISplitViewController {
-    
-    /// Simulates user swiping from the left, that causes master view to slide out.
-    func toggleMasterView() {
-        let barButtonItem = self.displayModeButtonItem
-        UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: nil, for: nil)
     }
 }

@@ -20,12 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = .white
         
         let splitViewController = UISplitViewController()
-        let imageGalleryTableViewController = ImageGalleryTableViewController()
-        let imageGalleryCollectionViewController = ImageGalleryCollectionViewController()
-        let imageGalleryTableViewNavigationController = UINavigationController(rootViewController: imageGalleryTableViewController)
-        let imageGalleryCollectionViewNavigationController = UINavigationController(rootViewController: imageGalleryCollectionViewController)
+        let gallerySelectionTableViewController = GallerySelectionTableViewController()
+        let galleryDisplayCollectionViewController = GalleryDisplayCollectionViewController()
+        let gallerySelectionTableViewNavigationController = UINavigationController(rootViewController: gallerySelectionTableViewController)
+        let galleryDisplayCollectionNavigationController = UINavigationController(rootViewController: galleryDisplayCollectionViewController)
         
-        splitViewController.viewControllers = [imageGalleryTableViewNavigationController, imageGalleryCollectionViewNavigationController]
+        splitViewController.viewControllers = [gallerySelectionTableViewNavigationController, galleryDisplayCollectionNavigationController]
         
         window?.rootViewController = splitViewController
         
