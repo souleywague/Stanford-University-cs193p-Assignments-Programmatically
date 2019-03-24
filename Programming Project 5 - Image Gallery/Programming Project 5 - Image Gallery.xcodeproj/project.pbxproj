@@ -19,6 +19,7 @@
 		7625EDD9223E3A1E00849309 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7625EDD8223E3A1E00849309 /* Assets.xcassets */; };
 		7625EDDC223E3A1E00849309 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7625EDDA223E3A1E00849309 /* LaunchScreen.storyboard */; };
 		7625EDE5223E3B4F00849309 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDE4223E3B4F00849309 /* Utilities.swift */; };
+		76CA8F0C2247C681005C6116 /* SelectedGalleryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76CA8F0B2247C681005C6116 /* SelectedGalleryDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		7625EDDB223E3A1E00849309 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7625EDDD223E3A1E00849309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7625EDE4223E3B4F00849309 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		76CA8F0B2247C681005C6116 /* SelectedGalleryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedGalleryDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				76130E0622437BF400050AE4 /* GallerySelectionTableViewCellDelegate.swift */,
+				76CA8F0B2247C681005C6116 /* SelectedGalleryDelegate.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -217,6 +220,7 @@
 				7625EDE5223E3B4F00849309 /* Utilities.swift in Sources */,
 				76130E0222436E1400050AE4 /* ImageGalleryStore.swift in Sources */,
 				76130E0D2243A3BA00050AE4 /* GalleryDisplayCollectionViewController.swift in Sources */,
+				76CA8F0C2247C681005C6116 /* SelectedGalleryDelegate.swift in Sources */,
 				76130E0F2243C82400050AE4 /* ImageDisplayViewController.swift in Sources */,
 				76130E05224377A300050AE4 /* GallerySelectionTableViewCell.swift in Sources */,
 				7625EDD2223E3A1900849309 /* AppDelegate.swift in Sources */,

@@ -62,7 +62,7 @@ class GallerySelectionTableViewCell: UITableViewCell {
     
     // MARK: - Overriden Properties
     
-    /// Change of this property to enable/disable the internarl textField.
+    /// Change of this property to enable/disable the internal textField.
     override var isEditing: Bool {
         didSet {
             titleTextField.isEnabled = isEditing

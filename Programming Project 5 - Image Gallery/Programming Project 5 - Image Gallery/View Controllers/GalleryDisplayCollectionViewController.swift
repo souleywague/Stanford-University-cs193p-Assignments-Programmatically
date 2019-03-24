@@ -25,10 +25,21 @@ class GalleryDisplayCollectionViewController: UIViewController {
         return collectionView
     }()
     
-    private lazy var trashButton: UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: nil)
+    private lazy var trashButton: UIButton = {
+        let button = UIButton()
         
-        return barButtonItem
+        button.setImage(UIImage(named: "icon_trash"), for: .normal)
+        
+        return button
+    }()
+    
+    private lazy var barItem: UIBarButtonItem = {
+        let barItem = UIBarButtonItem(customView: trashButton)
+        
+        barItem.customView!.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        barItem.customView!.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        
+        return barItem
     }()
     
     // MARK: - Properties
@@ -68,13 +79,42 @@ class GalleryDisplayCollectionViewController: UIViewController {
     }
     
     // MARK: - View Controller Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = .white
         
+        navigationItem.rightBarButtonItem = barItem
+        
+        setupCollectionView()
         setupLayout()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let dropInteraction = UIDropInteraction(delegate: self)
+        trashButton.addInteraction(dropInteraction)
+        
+        registerForGalleryNotifications()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        removeNotifications()
+    }
+    
+    override func loadView() {
+        super.loadView()
+        
+        galleryDisplayCollectionView.dragDelegate = self
+        galleryDisplayCollectionView.dropDelegate = self
+        
+        flowLayout?.minimumLineSpacing = 5
+        flowLayout?.minimumInteritemSpacing = 5 
+     }
     
     // MARK: - Methods
     
@@ -111,6 +151,14 @@ class GalleryDisplayCollectionViewController: UIViewController {
     
     // MARK: - Setup Functions
     
+    private func setupCollectionView() {
+        galleryDisplayCollectionView.delegate = self
+        galleryDisplayCollectionView.dataSource = self
+        
+        galleryDisplayCollectionView.register(ImageCollectionViewCell.self,
+                                              forCellWithReuseIdentifier: reuseIdentifier)
+    }
+    
     private func setupLayout() {
         let safeArea = view.safeAreaLayoutGuide
         
@@ -120,6 +168,14 @@ class GalleryDisplayCollectionViewController: UIViewController {
         galleryDisplayCollectionView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
         galleryDisplayCollectionView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
         galleryDisplayCollectionView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+    }
+    
+    private func setupNotifications() {
+        registerForGalleryNotifications()
+    }
+    
+    private func removeNotifications() {
+        removeGalleryNotifications()
     }
     
 }
@@ -239,7 +295,7 @@ extension GalleryDisplayCollectionViewController: UICollectionViewDropDelegate {
                 // Creates a new image to hold the place for the dragged one.
                 var draggedImage = ImageGallery.Image(imagePath: nil, aspectRatio: 1)
                 
-                // Loads the image/
+                // Loads the image.
                 _ = item.dragItem.itemProvider.loadObject(ofClass: UIImage.self) { (provider, error) in
                     DispatchQueue.main.async {
                         if let image = provider as? UIImage {
@@ -295,5 +351,42 @@ extension GalleryDisplayCollectionViewController: UIDropInteractionDelegate {
         gallery.images.remove(at: index)
         galleriesStore?.updateGallery(gallery)
     }
+}
+
+// MARK: SelectedGalleryDelegate
+
+extension GalleryDisplayCollectionViewController: SelectedGalleryDelegate {
+    func didSelectNewGallery(selectedGallery: ImageGallery, galleriesStore: ImageGalleryStore) {
+        self.gallery = selectedGallery
+        self.galleriesStore = galleriesStore
+    }
+    
+}
+
+// MARK: - Notifications
+
+extension GalleryDisplayCollectionViewController {
+    
+    // MARK: - Gallery Notifications
+    
+    private func registerForGalleryNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(didReceiveUpdateNotification(_:)),
+                                               name: NSNotification.Name.galleryUpdated,
+                                               object: nil)
+    }
+    
+    private func removeGalleryNotifications() {
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.galleryUpdated, object: self)
+    }
+    
+    @objc private func didReceiveUpdateNotification(_ notification: Notification) {
+        if let gallery = notification.userInfo?[Notification.Name.galleryUpdated] as? ImageGallery {
+            if gallery == self.gallery {
+                title = gallery.title
+            }
+        }
+    }
+    
 }
 

@@ -20,6 +20,10 @@ class GallerySelectionTableViewController: UIViewController {
         return tableView
     }()
     
+    // MARK: Delegates
+    
+    weak var delegate: SelectedGalleryDelegate? 
+    
     // MARK: - Properties
     
     /// The gallery cell id.
@@ -56,6 +60,7 @@ class GallerySelectionTableViewController: UIViewController {
         view.backgroundColor = .white
         
         setupTableView()
+        setupDelegates()
         setupLayout()
     }
     
@@ -102,9 +107,6 @@ class GallerySelectionTableViewController: UIViewController {
                                             animated: true,
                                             scrollPosition: UITableView.ScrollPosition.top)
         
-//        let selectedCell = gallerySelectionTableView.cellForRow(at: selectionIndexPath)
-        
-        // TODO: Perform Navigation
     }
     
     private func getGallery(at indexPath: IndexPath) -> ImageGallery? {
@@ -133,6 +135,12 @@ class GallerySelectionTableViewController: UIViewController {
         gallerySelectionTableView.dataSource = self
         
         gallerySelectionTableView.register(GallerySelectionTableViewCell.self, forCellReuseIdentifier: galleryCellID)
+    }
+    
+    private func setupDelegates() {
+        if let galleryDisplayCollectionViewController = splitViewController?.viewControllers.last?.contents as? GalleryDisplayCollectionViewController {
+            delegate = galleryDisplayCollectionViewController
+        }
     }
     
     private func setupLayout() {
@@ -236,6 +244,18 @@ extension GallerySelectionTableViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let section = Section(rawValue: indexPath.section)
+        
+        guard section == .available else { return }
+        
+        guard let galleriesStore = galleriesStore else { return }
+        
+        let selectedGallery = galleriesSource[indexPath.section][indexPath.row]
+        
+        delegate?.didSelectNewGallery(selectedGallery: selectedGallery, galleriesStore: galleriesStore)
     }
 }
 
