@@ -53,6 +53,8 @@ class GallerySelectionTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .white
+        
         setupTableView()
         setupLayout()
     }
@@ -67,7 +69,6 @@ class GallerySelectionTableViewController: UIViewController {
         if let selectedGallery = detailController?.gallery {
             if let index = galleriesStore?.galleries.firstIndex(of: selectedGallery) {
                 let selectionIndexPath = IndexPath(row: index, section: Section.available.rawValue)
-                
                 gallerySelectionTableView.selectRow(at: selectionIndexPath,
                                                     animated: true,
                                                     scrollPosition: .none)
@@ -76,7 +77,7 @@ class GallerySelectionTableViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+        super.viewDidAppear(animated)
         
         setupNotifications()
     }
@@ -101,7 +102,7 @@ class GallerySelectionTableViewController: UIViewController {
                                             animated: true,
                                             scrollPosition: UITableView.ScrollPosition.top)
         
-        let selectedCell = gallerySelectionTableView.cellForRow(at: selectionIndexPath)
+//        let selectedCell = gallerySelectionTableView.cellForRow(at: selectionIndexPath)
         
         // TODO: Perform Navigation
     }
@@ -127,16 +128,6 @@ class GallerySelectionTableViewController: UIViewController {
     
     // MARK: - Setup Functions
     
-    private func setupNotifications() {
-        registerForGalleryNotifications()
-        registerForKeyboardNotifications()
-    }
-    
-    private func removeNotifications() {
-        removeGalleryNotifications()
-        removeKeyboardNotifications()
-    }
-    
     private func setupTableView() {
         gallerySelectionTableView.delegate = self
         gallerySelectionTableView.dataSource = self
@@ -154,6 +145,16 @@ class GallerySelectionTableViewController: UIViewController {
         gallerySelectionTableView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
         gallerySelectionTableView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
     }
+    
+    private func setupNotifications() {
+        registerForGalleryNotifications()
+        registerForKeyboardNotifications()
+    }
+    
+    private func removeNotifications() {
+        removeGalleryNotifications()
+        removeKeyboardNotifications()
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -168,14 +169,14 @@ extension GallerySelectionTableViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: galleryCellID, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: galleryCellID,
+                                                 for: indexPath) as! GallerySelectionTableViewCell
         
         let gallery = galleriesSource[indexPath.section][indexPath.row]
         
-        if let galleryCell = cell as? GallerySelectionTableViewCell {
-            galleryCell.delegate = self
-            galleryCell.title = gallery.title
-        }
+        cell.delegate = self
+        
+        cell.title = gallery.title
         
         return cell
     }
@@ -231,6 +232,10 @@ extension GallerySelectionTableViewController: UITableViewDelegate {
         } else {
             return nil
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 44
     }
 }
 

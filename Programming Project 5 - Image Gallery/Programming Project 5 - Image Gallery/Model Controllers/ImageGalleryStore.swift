@@ -59,9 +59,8 @@ class ImageGalleryStore {
     
     /// Tries to access and retrieve the galleries stored at the specified key in the user defaults.
     private func getGalleriesBy(key: String) -> [ImageGallery]? {
-        let jsonDecoder = JSONDecoder()
         if let galleriesData = userDefaults.value(forKey: key) as? Data {
-            if let galleries = try? jsonDecoder.decode([ImageGallery].self, from: galleriesData) {
+            if let galleries = try? JSONDecoder().decode([ImageGallery].self, from: galleriesData) {
                 return galleries
             }
         }
@@ -70,9 +69,8 @@ class ImageGalleryStore {
     
     /// Tries to store the passed galleries at the key.
     private func storeGalleries(_ gallery: [ImageGallery], at key: String) {
-        let jsonEncoder = JSONEncoder()
         do {
-            try? userDefaults.setValue(jsonEncoder.encode(gallery),
+            try? userDefaults.setValue(JSONEncoder().encode(gallery),
                                        forKey: key)
             userDefaults.synchronize()
         }
@@ -132,5 +130,5 @@ class ImageGalleryStore {
 
 extension Notification.Name {
     static let galleryUpdated = Notification.Name(rawValue: "galleryUpdated")
-    static let galleryDeleted = Notification.Name("galleryDeleted")
+    static let galleryDeleted = Notification.Name(rawValue: "galleryDeleted")
 }

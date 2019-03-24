@@ -20,14 +20,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.backgroundColor = .white
         
         let splitViewController = UISplitViewController()
+        
         let gallerySelectionTableViewController = GallerySelectionTableViewController()
         let galleryDisplayCollectionViewController = GalleryDisplayCollectionViewController()
+        
         let gallerySelectionTableViewNavigationController = UINavigationController(rootViewController: gallerySelectionTableViewController)
         let galleryDisplayCollectionNavigationController = UINavigationController(rootViewController: galleryDisplayCollectionViewController)
         
         splitViewController.viewControllers = [gallerySelectionTableViewNavigationController, galleryDisplayCollectionNavigationController]
         
         window?.rootViewController = splitViewController
+        
+        let galleriesStore = ImageGalleryStore()
+        
+        if let gallerySelectionTableViewController = (window?.rootViewController as? UISplitViewController)?.viewControllers.first?.contents as? GallerySelectionTableViewController {
+            gallerySelectionTableViewController.galleriesStore = galleriesStore
+        }
+        
+        if let galleryDisplayCollectionViewController = (window?.rootViewController as? UISplitViewController)?.viewControllers.last?.contents as? GalleryDisplayCollectionViewController {
+            galleryDisplayCollectionViewController.galleriesStore = galleriesStore
+            galleryDisplayCollectionViewController.gallery = galleriesStore.galleries.first
+        }
         
         window?.makeKeyAndVisible()
         

@@ -14,6 +14,8 @@ struct ImageGallery: Hashable, Codable {
     /// Model representing a gallery's image.
     struct Image: Hashable, Codable {
         
+        // MARK: - Hashable
+        
         var hashValue: Int {
             return imagePath?.hashValue ?? 0
         }
