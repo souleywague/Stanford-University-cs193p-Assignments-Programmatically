@@ -227,3 +227,12 @@ extension UIView {
         return image
     }
 }
+
+extension UISplitViewController {
+    
+    /// Simulates user swiping from the left, that causes master view to slide out.
+    func toggleMasterView() {
+        let barButtonItem = self.displayModeButtonItem
+        UIApplication.shared.sendAction(barButtonItem.action!, to: barButtonItem.target, from: nil, for: nil)
+    }
+}

@@ -85,6 +85,11 @@ class GalleryDisplayCollectionViewController: UIViewController {
         
         view.backgroundColor = .white
         
+        // Adds a back button on the navigation panel, that changes display mode of the splitVC to the previous value
+        navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+        // Without this, back button won't show up in portrait mode
+        navigationItem.leftItemsSupplementBackButton = true
+        
         navigationItem.rightBarButtonItem = barItem
         
         setupCollectionView()

@@ -183,6 +183,9 @@ extension GallerySelectionTableViewController: UITableViewDataSource {
         let gallery = galleriesSource[indexPath.section][indexPath.row]
         
         cell.delegate = self
+        cell.parentViewController = self
+        
+        cell.addTapGestures()
         
         cell.title = gallery.title
         
@@ -234,6 +237,8 @@ extension GallerySelectionTableViewController: UITableViewDelegate {
                 }
             }
             
+            recoverAction.backgroundColor = #colorLiteral(red: 0.2591530566, green: 0.7850571066, blue: 0.3686157331, alpha: 1)
+            
             actions.append(recoverAction)
             
             return UISwipeActionsConfiguration(actions: actions)
@@ -256,6 +261,8 @@ extension GallerySelectionTableViewController: UITableViewDelegate {
         let selectedGallery = galleriesSource[indexPath.section][indexPath.row]
         
         delegate?.didSelectNewGallery(selectedGallery: selectedGallery, galleriesStore: galleriesStore)
+        
+        splitViewController?.toggleMasterView()
     }
 }
 
