@@ -28,8 +28,18 @@ class GalleryDisplayCollectionViewController: UIViewController {
     private lazy var trashButton: UIBarButtonItem = {
         let itemButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: nil)
         
+        itemButton.isSpringLoaded = true
+        
+        // TODO: Make the button functional.
+        
         return itemButton
     }()
+    
+    // MARK: - Delegates
+    
+    private lazy var imageDisplayViewController = ImageDisplayViewController()
+    
+    weak var delegate: ImageSelectionDelegate?
     
     // MARK: - Properties
     
@@ -43,10 +53,8 @@ class GalleryDisplayCollectionViewController: UIViewController {
     var gallery: ImageGallery! {
         didSet {
             title = gallery?.title
-            DispatchQueue.global(qos: .userInitiated).async {
-                DispatchQueue.main.async {
-                    self.galleryDisplayCollectionView.reloadData()
-                }
+            DispatchQueue.main.async {
+                self.galleryDisplayCollectionView.reloadData()
             }
         }
     }
@@ -87,6 +95,7 @@ class GalleryDisplayCollectionViewController: UIViewController {
         navigationItem.rightBarButtonItem = trashButton
         
         setupCollectionView()
+        setupDelegate()
         setupLayout()
     }
     
@@ -122,11 +131,17 @@ class GalleryDisplayCollectionViewController: UIViewController {
     /// Inserts the provided image at the provided indexPath.
     private func insertImage(_ image: ImageGallery.Image, at indexPath: IndexPath) {
         gallery.images.insert(image, at: indexPath.item)
-        print("Updated \(gallery.images.count)")
         galleriesStore?.updateGallery(gallery)
     }
     
-    // MARK: - Actions
+    // MARK: - Gestures
+    
+    private func addPinchGesture(to collectionView: UICollectionView) {
+        let pinch = UIPinchGestureRecognizer(target: self,
+                                             action: #selector(didPinch(_:)))
+        
+        collectionView.addGestureRecognizer(pinch)
+    }
     
     @objc private func didPinch(_ sender: UIPinchGestureRecognizer) {
         guard let maximumItemWidth = maximumItemWidth else { return }
@@ -153,6 +168,12 @@ class GalleryDisplayCollectionViewController: UIViewController {
         
         galleryDisplayCollectionView.register(ImageCollectionViewCell.self,
                                               forCellWithReuseIdentifier: reuseIdentifier)
+        
+        addPinchGesture(to: galleryDisplayCollectionView)
+    }
+    
+    private func setupDelegate() {
+        delegate = imageDisplayViewController
     }
     
     private func setupLayout() {
@@ -201,7 +222,11 @@ extension GalleryDisplayCollectionViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // TODO: Add logic to the next VC
+        guard let selectedImage = getImage(at: indexPath) else { return }
+
+        delegate?.didSelectImage(selectedImage: selectedImage)
+        
+        navigationController?.show(imageDisplayViewController, sender: self)
     }
     
 }
@@ -364,8 +389,6 @@ extension GalleryDisplayCollectionViewController: GallerySelectionDelegate {
     func didSelectGallery(selectedGallery: ImageGallery, galleriesStore: ImageGalleryStore) {
         self.gallery = selectedGallery
         self.galleriesStore = galleriesStore
-        
-        print(self.gallery)
     }
     
 }

@@ -57,10 +57,14 @@ class GallerySelectionTableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        navigationItem.title = "Galleries"
+        
         view.backgroundColor = .white
         
         setupTableView()
-        setupDelegates()
+        setupDelegate()
         setupLayout()
     }
     
@@ -136,7 +140,7 @@ class GallerySelectionTableViewController: UIViewController {
         gallerySelectionTableView.register(GallerySelectionTableViewCell.self, forCellReuseIdentifier: galleryCellID)
     }
     
-    private func setupDelegates() {
+    private func setupDelegate() {
         if let galleryDisplayCollectionViewController = splitViewController?.viewControllers.last?.contents as? GalleryDisplayCollectionViewController {
             
             delegate = galleryDisplayCollectionViewController

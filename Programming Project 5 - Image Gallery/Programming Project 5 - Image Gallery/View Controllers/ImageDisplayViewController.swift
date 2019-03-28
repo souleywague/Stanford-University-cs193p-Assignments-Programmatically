@@ -26,6 +26,8 @@ class ImageDisplayViewController: UIViewController {
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         
+        imageView.contentMode = .scaleAspectFit
+        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
@@ -33,13 +35,16 @@ class ImageDisplayViewController: UIViewController {
     
     // MARK: - Properties
     
-    var image: ImageGallery.Image!
+    private var image: ImageGallery.Image!
     
     // MARK: - View Controller Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .white
+        
+        scrollView.delegate = self
         setupLayout()
     }
     
@@ -64,9 +69,24 @@ class ImageDisplayViewController: UIViewController {
         scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
         
-        imageView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        imageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        imageView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        imageView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        imageView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
+        imageView.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor).isActive = true
     }
+}
+
+
+// MARK: - ScrollViewDelegate
+
+extension ImageDisplayViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
+    }
+}
+
+// MARK: - ImageSelectionDelegate
+extension ImageDisplayViewController: ImageSelectionDelegate {
+    func didSelectImage(selectedImage: ImageGallery.Image) {
+        self.image = selectedImage
+    }
+    
 }

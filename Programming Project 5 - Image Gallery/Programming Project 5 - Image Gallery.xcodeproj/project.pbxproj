@@ -20,6 +20,7 @@
 		7625EDDC223E3A1E00849309 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7625EDDA223E3A1E00849309 /* LaunchScreen.storyboard */; };
 		7625EDE5223E3B4F00849309 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7625EDE4223E3B4F00849309 /* Utilities.swift */; };
 		76AB6A0D224CBACF00F94CC3 /* GallerySelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AB6A0C224CBACF00F94CC3 /* GallerySelectionDelegate.swift */; };
+		76AB6A0F224CD71900F94CC3 /* ImageSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AB6A0E224CD71900F94CC3 /* ImageSelectionDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		7625EDDD223E3A1E00849309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7625EDE4223E3B4F00849309 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		76AB6A0C224CBACF00F94CC3 /* GallerySelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GallerySelectionDelegate.swift; sourceTree = "<group>"; };
+		76AB6A0E224CD71900F94CC3 /* ImageSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSelectionDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 			children = (
 				76130E0622437BF400050AE4 /* GallerySelectionTableViewCellDelegate.swift */,
 				76AB6A0C224CBACF00F94CC3 /* GallerySelectionDelegate.swift */,
+				76AB6A0E224CD71900F94CC3 /* ImageSelectionDelegate.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -225,6 +228,7 @@
 				76130E05224377A300050AE4 /* GallerySelectionTableViewCell.swift in Sources */,
 				7625EDD2223E3A1900849309 /* AppDelegate.swift in Sources */,
 				76130E0722437BF400050AE4 /* GallerySelectionTableViewCellDelegate.swift in Sources */,
+				76AB6A0F224CD71900F94CC3 /* ImageSelectionDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
