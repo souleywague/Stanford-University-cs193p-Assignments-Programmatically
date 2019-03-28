@@ -25,21 +25,10 @@ class GalleryDisplayCollectionViewController: UIViewController {
         return collectionView
     }()
     
-    private lazy var trashButton: UIButton = {
-        let button = UIButton()
+    private lazy var trashButton: UIBarButtonItem = {
+        let itemButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: nil)
         
-        button.setImage(UIImage(named: "icon_trash"), for: .normal)
-        
-        return button
-    }()
-    
-    private lazy var barItem: UIBarButtonItem = {
-        let barItem = UIBarButtonItem(customView: trashButton)
-        
-        barItem.customView!.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        barItem.customView!.heightAnchor.constraint(equalToConstant: 25).isActive = true
-        
-        return barItem
+        return itemButton
     }()
     
     // MARK: - Properties
@@ -54,7 +43,11 @@ class GalleryDisplayCollectionViewController: UIViewController {
     var gallery: ImageGallery! {
         didSet {
             title = gallery?.title
-            galleryDisplayCollectionView.reloadData()
+            DispatchQueue.global(qos: .userInitiated).async {
+                DispatchQueue.main.async {
+                    self.galleryDisplayCollectionView.reloadData()
+                }
+            }
         }
     }
     
@@ -87,10 +80,11 @@ class GalleryDisplayCollectionViewController: UIViewController {
         
         // Adds a back button on the navigation panel, that changes display mode of the splitVC to the previous value
         navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+        
         // Without this, back button won't show up in portrait mode
         navigationItem.leftItemsSupplementBackButton = true
         
-        navigationItem.rightBarButtonItem = barItem
+        navigationItem.rightBarButtonItem = trashButton
         
         setupCollectionView()
         setupLayout()
@@ -98,9 +92,6 @@ class GalleryDisplayCollectionViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        let dropInteraction = UIDropInteraction(delegate: self)
-        trashButton.addInteraction(dropInteraction)
         
         registerForGalleryNotifications()
     }
@@ -196,9 +187,7 @@ extension GalleryDisplayCollectionViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
         
-        guard let galleryImage = getImage(at: indexPath) else {
-            return cell
-        }
+        guard let galleryImage = getImage(at: indexPath) else { return cell }
         
         if let imageCell = cell as? ImageCollectionViewCell {
             if let data = galleryImage.imageData, let image = UIImage(data: data) {
@@ -209,6 +198,10 @@ extension GalleryDisplayCollectionViewController: UICollectionViewDataSource {
             }
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // TODO: Add logic to the next VC
     }
     
 }
@@ -345,7 +338,14 @@ extension GalleryDisplayCollectionViewController: UIDropInteractionDelegate {
     }
     
     func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
-        return UIDropProposal(operation: .move)
+        guard let trashButtonView = trashButton.value(forKey: "view") as? UIView else {
+            return UIDropProposal(operation: .cancel)
+        }
+        
+        let currentDropPoint = session.location(in: trashButtonView)
+        let isDraggingOverTrashButton = trashButtonView.bounds.contains(currentDropPoint)
+        
+        return UIDropProposal(operation: isDraggingOverTrashButton ? .move : .cancel)
     }
     
     func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
@@ -360,10 +360,12 @@ extension GalleryDisplayCollectionViewController: UIDropInteractionDelegate {
 
 // MARK: SelectedGalleryDelegate
 
-extension GalleryDisplayCollectionViewController: SelectedGalleryDelegate {
-    func didSelectNewGallery(selectedGallery: ImageGallery, galleriesStore: ImageGalleryStore) {
+extension GalleryDisplayCollectionViewController: GallerySelectionDelegate {
+    func didSelectGallery(selectedGallery: ImageGallery, galleriesStore: ImageGalleryStore) {
         self.gallery = selectedGallery
         self.galleriesStore = galleriesStore
+        
+        print(self.gallery)
     }
     
 }
@@ -382,7 +384,9 @@ extension GalleryDisplayCollectionViewController {
     }
     
     private func removeGalleryNotifications() {
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.galleryUpdated, object: self)
+        NotificationCenter.default.removeObserver(self,
+                                                  name: Notification.Name.galleryUpdated,
+                                                  object: self)
     }
     
     @objc private func didReceiveUpdateNotification(_ notification: Notification) {

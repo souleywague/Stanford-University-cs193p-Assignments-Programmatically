@@ -23,7 +23,7 @@ class ImageDisplayViewController: UIViewController {
         return scrollView
     }()
     
-    lazy var imageView: UIImageView = {
+    private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +64,9 @@ class ImageDisplayViewController: UIViewController {
         scrollView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
         
-        imageView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor).isActive = true
+        imageView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        imageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        imageView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
     }
 }

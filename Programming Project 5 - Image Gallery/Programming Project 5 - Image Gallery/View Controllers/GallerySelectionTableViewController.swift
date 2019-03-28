@@ -22,7 +22,7 @@ class GallerySelectionTableViewController: UIViewController {
     
     // MARK: Delegates
     
-    weak var delegate: SelectedGalleryDelegate? 
+    weak var delegate: GallerySelectionDelegate?
     
     // MARK: - Properties
     
@@ -106,7 +106,6 @@ class GallerySelectionTableViewController: UIViewController {
         gallerySelectionTableView.selectRow(at: selectionIndexPath,
                                             animated: true,
                                             scrollPosition: UITableView.ScrollPosition.top)
-        
     }
     
     private func getGallery(at indexPath: IndexPath) -> ImageGallery? {
@@ -139,6 +138,7 @@ class GallerySelectionTableViewController: UIViewController {
     
     private func setupDelegates() {
         if let galleryDisplayCollectionViewController = splitViewController?.viewControllers.last?.contents as? GalleryDisplayCollectionViewController {
+            
             delegate = galleryDisplayCollectionViewController
         }
     }
@@ -260,7 +260,7 @@ extension GallerySelectionTableViewController: UITableViewDelegate {
         
         let selectedGallery = galleriesSource[indexPath.section][indexPath.row]
         
-        delegate?.didSelectNewGallery(selectedGallery: selectedGallery, galleriesStore: galleriesStore)
+        delegate?.didSelectGallery(selectedGallery: selectedGallery, galleriesStore: galleriesStore)
         
         splitViewController?.toggleMasterView()
     }
