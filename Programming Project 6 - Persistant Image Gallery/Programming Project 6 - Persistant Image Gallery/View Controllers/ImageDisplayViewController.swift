@@ -1,15 +1,15 @@
 //
 //  ImageDisplayViewController.swift
-//  Programming Project 5 - Image Gallery
+//  Programming Project 6 - Persistant Image Gallery
 //
-//  Created by Souley on 21/03/2019.
+//  Created by Souley on 31/03/2019.
 //  Copyright © 2019 Souley. All rights reserved.
 //
 
 import UIKit
 
 class ImageDisplayViewController: UIViewController {
-
+    
     // MARK: - User Interface Delegate
     
     private lazy var scrollView: UIScrollView = {
@@ -35,7 +35,11 @@ class ImageDisplayViewController: UIViewController {
     
     // MARK: - Properties
     
-    private var image: ImageGallery.Image!
+    var image: UIImage! {
+        didSet {
+            imageView.image = image
+        }
+    }
     
     // MARK: - View Controller Life Cycle
     
@@ -52,9 +56,7 @@ class ImageDisplayViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if let data = image?.imageData {
-            imageView.image = UIImage(data: data)
-        }
+        imageView.image = image
     }
     
     // MARK: - Setup Functions
@@ -87,8 +89,9 @@ extension ImageDisplayViewController: UIScrollViewDelegate {
 // MARK: - ImageSelectionDelegate
 
 extension ImageDisplayViewController: ImageSelectionDelegate {
-    func didSelectImage(selectedImage: ImageGallery.Image) {
+    func didSelectImage(selectedImage: UIImage) {
         self.image = selectedImage
     }
     
 }
+
