@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ImageGalleryDocuement: UIDocument {
+class ImageGalleryDocument: UIDocument {
     
     // MARK: - Properties
     

@@ -20,6 +20,7 @@
 		7650D7AE2250D363005C1CB8 /* ImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650D7AD2250D363005C1CB8 /* ImageCollectionViewCell.swift */; };
 		7650D7B12250D3F7005C1CB8 /* ImageDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650D7B02250D3F7005C1CB8 /* ImageDisplayViewController.swift */; };
 		7650D7B32250D44E005C1CB8 /* ImageSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650D7B22250D44E005C1CB8 /* ImageSelectionDelegate.swift */; };
+		7650D7B62250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650D7B52250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		7650D7AD2250D363005C1CB8 /* ImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		7650D7B02250D3F7005C1CB8 /* ImageDisplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDisplayViewController.swift; sourceTree = "<group>"; };
 		7650D7B22250D44E005C1CB8 /* ImageSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSelectionDelegate.swift; sourceTree = "<group>"; };
+		7650D7B52250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryDisplayCollectionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 			children = (
 				7650D79A2250B5B0005C1CB8 /* ImageGalleryDocumentBrowserViewController.swift */,
 				7650D7B02250D3F7005C1CB8 /* ImageDisplayViewController.swift */,
+				7650D7B52250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 				7650D7A92250CD58005C1CB8 /* ImageRequestManager.swift in Sources */,
 				7650D7B32250D44E005C1CB8 /* ImageSelectionDelegate.swift in Sources */,
 				7650D7A32250C67D005C1CB8 /* Utilities.swift in Sources */,
+				7650D7B62250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift in Sources */,
 				7650D7AE2250D363005C1CB8 /* ImageCollectionViewCell.swift in Sources */,
 				7650D79E2250B853005C1CB8 /* UIViewController.swift in Sources */,
 				7650D7AC2250D0B9005C1CB8 /* ImageGalleryDocument.swift in Sources */,
