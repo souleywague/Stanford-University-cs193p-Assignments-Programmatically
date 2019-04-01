@@ -15,6 +15,8 @@ class ImageGalleryDocumentBrowserViewController: UIDocumentBrowserViewController
     /// The template file's url.
     var templateURL: URL?
     
+    weak var gallerySelectionDelegate: GallerySelectionDelegate?
+    
     // MARK: - View Controller Life Cycle
     
     override func viewDidLoad() {
@@ -42,7 +44,8 @@ class ImageGalleryDocumentBrowserViewController: UIDocumentBrowserViewController
                                                                 contents: Data())
                 
                 // Writes an empty image gallery into the template file:
-                
+                let emptyGallery = ImageGallery(images: [], title: "untitled")
+                _ = try? JSONEncoder().encode(emptyGallery).write(to: templateURL)
             }
         }
     }
@@ -52,7 +55,13 @@ class ImageGalleryDocumentBrowserViewController: UIDocumentBrowserViewController
     
     /// Presents the document stored at the provided url.
     func presentDocument(at documentURL: URL) {
-        // TODO: Present Gallery Display View Controller
+        let galleryDisplayCollectionViewController = GalleryDisplayCollectionViewController()
+        
+        let navigationController = UINavigationController(rootViewController: galleryDisplayCollectionViewController)
+        
+        gallerySelectionDelegate?.didSelectGallery(galleryDocument: ImageGalleryDocument(fileURL: documentURL), imageRequestManager: ImageRequestManager())
+        
+        present(navigationController, animated: true, completion: nil)
     }
 }
 

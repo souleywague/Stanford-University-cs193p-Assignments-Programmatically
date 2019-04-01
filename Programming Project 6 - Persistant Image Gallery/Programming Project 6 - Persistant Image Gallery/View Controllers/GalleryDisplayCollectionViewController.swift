@@ -92,7 +92,10 @@ class GalleryDisplayCollectionViewController: UIViewController {
         
         view.backgroundColor = .white
         
-        navigationItem.rightBarButtonItem = trashButton
+        navigationItem.leftBarButtonItem = trashButton
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                            target: self,
+                                                            action: #selector(doneButtonTapped(_:)))
         
         setupCollectionView()
         setupDelegate()
@@ -159,7 +162,7 @@ class GalleryDisplayCollectionViewController: UIViewController {
         }
     }
     
-    @objc private func didTapDone(_ sender: UIBarButtonItem) {
+    @objc private func doneButtonTapped(_ sender: UIBarButtonItem) {
         galleryDocument?.gallery = gallery
         
         if !cachedImages.isEmpty {
@@ -176,6 +179,8 @@ class GalleryDisplayCollectionViewController: UIViewController {
                 self.dismiss(animated: true)
             }
         }
+        
+        navigationController?.dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Methods
@@ -256,6 +261,18 @@ extension GalleryDisplayCollectionViewController: UICollectionViewDataSource {
             }
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let imageDisplayViewController = ImageDisplayViewController()
+        
+        guard let selectedImageModel = getImage(at: indexPath) else { return }
+        
+        guard let selectedImage = cachedImages[selectedImageModel] else { return }
+        
+        delegate?.didSelectImage(selectedImage: selectedImage)
+        
+        navigationController?.show(imageDisplayViewController, sender: self)
     }
     
 }
@@ -402,4 +419,16 @@ extension GalleryDisplayCollectionViewController: UIDropInteractionDelegate {
         
         gallery.images.remove(at: index)
     }
+    
+}
+
+// MARK: - GallerySelectionDelegate
+
+extension GalleryDisplayCollectionViewController: GallerySelectionDelegate {
+    
+    func didSelectGallery(galleryDocument: ImageGalleryDocument, imageRequestManager: ImageRequestManager) {
+        self.galleryDocument = galleryDocument
+        self.imageRequestManager = imageRequestManager
+    }
+    
 }

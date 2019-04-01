@@ -21,6 +21,7 @@
 		7650D7B12250D3F7005C1CB8 /* ImageDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650D7B02250D3F7005C1CB8 /* ImageDisplayViewController.swift */; };
 		7650D7B32250D44E005C1CB8 /* ImageSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650D7B22250D44E005C1CB8 /* ImageSelectionDelegate.swift */; };
 		7650D7B62250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7650D7B52250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift */; };
+		76BFD6772251F7D800C42AE8 /* GallerySelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BFD6762251F7D800C42AE8 /* GallerySelectionDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		7650D7B02250D3F7005C1CB8 /* ImageDisplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDisplayViewController.swift; sourceTree = "<group>"; };
 		7650D7B22250D44E005C1CB8 /* ImageSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSelectionDelegate.swift; sourceTree = "<group>"; };
 		7650D7B52250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryDisplayCollectionViewController.swift; sourceTree = "<group>"; };
+		76BFD6762251F7D800C42AE8 /* GallerySelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GallerySelectionDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,9 +75,9 @@
 			isa = PBXGroup;
 			children = (
 				7650D7A72250C92A005C1CB8 /* Models */,
+				7650D7AA2250CD6C005C1CB8 /* Managers */,
 				7650D79C2250B5BE005C1CB8 /* View Controllers */,
 				7650D7AF2250D36A005C1CB8 /* Views */,
-				7650D7AA2250CD6C005C1CB8 /* Managers */,
 				7650D7B42250D45C005C1CB8 /* Protocols */,
 				7650D79F2250B85C005C1CB8 /* Extensions */,
 				7650D7A42250C68F005C1CB8 /* Utilities */,
@@ -99,8 +101,8 @@
 			isa = PBXGroup;
 			children = (
 				7650D79A2250B5B0005C1CB8 /* ImageGalleryDocumentBrowserViewController.swift */,
-				7650D7B02250D3F7005C1CB8 /* ImageDisplayViewController.swift */,
 				7650D7B52250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift */,
+				7650D7B02250D3F7005C1CB8 /* ImageDisplayViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -150,6 +152,7 @@
 		7650D7B42250D45C005C1CB8 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				76BFD6762251F7D800C42AE8 /* GallerySelectionDelegate.swift */,
 				7650D7B22250D44E005C1CB8 /* ImageSelectionDelegate.swift */,
 			);
 			path = Protocols;
@@ -236,6 +239,7 @@
 				7650D7B62250E094005C1CB8 /* GalleryDisplayCollectionViewController.swift in Sources */,
 				7650D7AE2250D363005C1CB8 /* ImageCollectionViewCell.swift in Sources */,
 				7650D79E2250B853005C1CB8 /* UIViewController.swift in Sources */,
+				76BFD6772251F7D800C42AE8 /* GallerySelectionDelegate.swift in Sources */,
 				7650D7AC2250D0B9005C1CB8 /* ImageGalleryDocument.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
