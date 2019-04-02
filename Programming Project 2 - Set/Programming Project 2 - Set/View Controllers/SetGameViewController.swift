@@ -23,7 +23,7 @@ class SetGameViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
         return stackView
-    }()
+    }() 
     
     private lazy var setGameStackView: UIStackView = {
         let stackView = UIStackView()

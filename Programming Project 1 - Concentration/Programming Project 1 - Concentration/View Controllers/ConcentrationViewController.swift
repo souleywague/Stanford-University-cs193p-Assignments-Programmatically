@@ -270,7 +270,7 @@ class ConcentrationViewController: UIViewController {
         }
         
         newGameButton.addTarget(self, action: #selector(newGameButtonTapped), for: .touchUpInside)
-    }
+    } 
     
     private func setupLayout() {
         let safeArea = view.safeAreaLayoutGuide
