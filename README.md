@@ -42,7 +42,7 @@ The goal of this assignment is to create a set game app **fully programmatically
 
 ### Objective 
 
-The goal of this assignment is to build custom view, including handling custo multitouch gestures **fully programmatically**. 
+The goal of this assignment is to build custom view, including handling custom multitouch gestures **fully programmatically**. 
 
 ### Things Practiced
 
